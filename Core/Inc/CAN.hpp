@@ -9,7 +9,7 @@
 #ifndef INC_CAN_HPP_
 #define INC_CAN_HPP_
 
-#include <STM_MotorSystem.hpp>
+#include "main.h"
 
 #define _MAX_DLC 8
 
@@ -27,17 +27,27 @@ typedef union{
 	uint8_t all_data[_MAX_DLC];
 }can_data;
 
+typedef union{
+	struct{
+		uint8_t bit0 : 1;
+		uint8_t bit1 : 1;
+		uint8_t bit2 : 1;
+		uint8_t bit3 : 1;
+	};
+	uint8_t all_data:4;
+}id_set;
 
-
-class USE_CAN{
+class USER_CAN{
 private :
 	CAN_FilterTypeDef * _filter;
 	CAN_TxHeaderTypeDef * _TxHeader;
 
 public :
-	USE_CAN(); //CAN通信のフィルタとかの設定
+	USER_CAN(); //CAN通信のフィルタとかの設定
 
 	void use_tx_CAN(uint32_t cmd,float data); //CAN通信の送信関数
+
+	uint8_t set_id_CAN();
 
 	CAN_HandleTypeDef * _use_hcan;
 

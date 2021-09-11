@@ -1,6 +1,6 @@
 Core/Src/STM_MotorSystem_init.o: ../Core/Src/STM_MotorSystem_init.cpp \
- ../Core/Inc/STM_MotorSystem.hpp ../Core/Inc/CAN.hpp ../Core/Inc/PID.hpp \
- ../Core/Inc/main.h ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h \
+ ../Core/Inc/STM_MotorSystem.hpp ../Core/Inc/CAN.hpp ../Core/Inc/main.h \
+ ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h \
  ../Core/Inc/stm32f3xx_hal_conf.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_rcc.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_def.h \
@@ -31,13 +31,12 @@ Core/Src/STM_MotorSystem_init.o: ../Core/Src/STM_MotorSystem_init.cpp \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_tim.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_tim_ex.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h \
- ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart_ex.h
+ ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart_ex.h \
+ ../Core/Inc/PID.hpp
 
 ../Core/Inc/STM_MotorSystem.hpp:
 
 ../Core/Inc/CAN.hpp:
-
-../Core/Inc/PID.hpp:
 
 ../Core/Inc/main.h:
 
@@ -104,3 +103,5 @@ Core/Src/STM_MotorSystem_init.o: ../Core/Src/STM_MotorSystem_init.cpp \
 ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:
 
 ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart_ex.h:
+
+../Core/Inc/PID.hpp:

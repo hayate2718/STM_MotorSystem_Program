@@ -4,14 +4,13 @@
  *  Created on: 2021/09/11
  *      Author: 0_hayate
  */
-
-#include <CAN.hpp>
-#include <PID.hpp>
-#include <stdio.h>
-#include "main.h"
-
 #ifndef INC_STM_MOTORSYSTEM_H_
 #define INC_STM_MOTORSYSTEM_H_
+
+#include <stdio.h>
+#include <CAN.hpp>
+#include <PID.hpp>
+#include "main.h"
 
 
 class STM_MotorSystem
@@ -43,6 +42,8 @@ public:
 	PID pid_velocity;
 
 	PID pid_torque;
+
+	USER_CAN use_can;
 
 };
 

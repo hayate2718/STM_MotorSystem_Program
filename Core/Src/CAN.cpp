@@ -4,37 +4,41 @@
  *  Created on: 2021/09/11
  *      Author: 0_hayate
  */
-
+#include <STM_MotorSystem.hpp>
 #include <CAN.hpp>
 
 typedef enum{
-	SET_VELOCITY,
-	SET_VELOCITY_P,
-	SET_VELOCITY_I,
-	SET_VELOCITY_D,
+	SET_VELOCITY = 0xf010,
+	SET_VELOCITY_P = 0xf020,
+	SET_VELOCITY_I = 0xf030,
+	SET_VELOCITY_D = 0xf040,
 
-	SET_TORQUE,
-	SET_TORQUE_P,
-	SET_TORQUE_I,
-	SET_TORQUE_D,
+	SET_TORQUE = 0xf110,
+	SET_TORQUE_P = 0xf120,
+	SET_TORQUE_I = 0xf130,
+	SET_TORQUE_D = 0xf140,
 
-	GET_VELOCITY,
-	GET_VELOCITY_P,
-	GET_VELOCITY_I,
-	GET_VELOCITY_D,
+	SET_VOLTAGE =0xf210, //電源電圧
+	SET_PPR = 0xf220, //エンコダ分解能
+	SET_KT = 0xf230, //モタトルク係数
 
-	GET_TORQUE_P,
-	GET_TORQUE_I,
-	GET_TORQUE_D,
+	GET_VELOCITY = 0xe010,
+	GET_VELOCITY_P = 0xe020,
+	GET_VELOCITY_I = 0xe030,
+	GET_VELOCITY_D = 0xe040,
 
-	GET_CURRENT,
+	GET_TORQUE_P = 0xe110,
+	GET_TORQUE_I = 0xe120,
+	GET_TORQUE_D = 0xe130,
 
-	SYSTEM_INIT,
-	SYSTEM_START
+	GET_CURRENT = 0xe210,
+
+	SYSTEM_INIT = 0x0310,
+	SYSTEM_START = 0x0320
 
 }cmd;
 
-USE_CAN::USE_CAN(){
+USER_CAN::USER_CAN(){
 
 	CAN_FilterTypeDef filter;
 	_filter = &filter;
@@ -42,9 +46,23 @@ USE_CAN::USE_CAN(){
 	CAN_TxHeaderTypeDef TxHeader;
 	_TxHeader = &TxHeader;
 
+	filter.FilterActivation = 0; //filter enable
+	filter.FilterBank = 0; //used filterbank 0
+ 	filter.FilterFIFOAssignment = 0; //rxdata to fifo0
+	filter.FilterMode = 0; //filter mode is mask mode
+	filter.FilterScale = 0; //filterscale is dual 16bits
+	filter.FilterIdHigh = set_id_CAN();
+	filter.FilterMaskIdHigh = 15;
+	HAL_CAN_ConfigFilter(_use_hcan, _filter);
+
+	TxHeader.DLC = 4; //データ長（4byte）
+	TxHeader.IDE = 0; //標準識別子
+	TxHeader.RTR = 0; //データフレーム (現状モータシステムからホストにデータ要求はしないと思うから)
+	TxHeader.TransmitGlobalTime = DISABLE; //タイムスタンプ無効
+
 }
 
-void USE_CAN::use_tx_CAN(uint32_t cmd,float data){
+void USER_CAN::use_tx_CAN(uint32_t cmd,float data){
 	CAN_TxHeaderTypeDef *TxHeader;
 	TxHeader = _TxHeader;
 
@@ -53,19 +71,29 @@ void USE_CAN::use_tx_CAN(uint32_t cmd,float data){
 	uint32_t mailbox;
 
 	tx.low_data = data;
-	TxHeader->StdId = cmd;
+	TxHeader->StdId = cmd+set_id_CAN();
 
 	HAL_CAN_AddTxMessage(_use_hcan,TxHeader, tx.low_data_raw,&mailbox);
+}
+
+uint8_t USER_CAN::set_id_CAN(){
+	id_set id;
+	id.bit0 = HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_1);
+	id.bit1 = HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_8);
+	id.bit2 = HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_9);
+	id.bit3 = HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_10);
+	return id.all_data;
 }
 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan){
 	CAN_RxHeaderTypeDef RxHeader;
 	can_data rx;
-
+	uint32_t cmd;
 	STM_MotorSystem *ms = _ms;
 
 	if(HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, rx.low_data_raw) == HAL_OK){
-			switch(RxHeader.StdId){
+		cmd = RxHeader.StdId & 0xfff0;
+		switch(cmd){
 			case SET_VELOCITY:
 				ms->set_velocity(rx.low_data);
 				break;
