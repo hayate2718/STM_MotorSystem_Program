@@ -1,0 +1,2 @@
+ENCODER.cpp:10:1:ENCODER::ENCODER(TIM_HandleTypeDef*)	24	static
+ENCODER.cpp:23:10:uint32_t ENCODER::get_count()	16	static

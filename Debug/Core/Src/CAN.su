@@ -1,6 +1,10 @@
 PID.hpp:42:13:void PID::PID_set_p(float)	16	static
-STM_MotorSystem.hpp:33:7:void STM_MotorSystem::set_velocity(float)	16	static
-CAN.cpp:51:1:USER_CAN::USER_CAN()	80	static
-CAN.cpp:75:6:void USER_CAN::use_tx_CAN(uint32_t, float)	40	static
-CAN.cpp:89:9:uint8_t USER_CAN::set_id_CAN()	24	static
-CAN.cpp:98:6:void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef*)	64	static
+STM_MotorSystem.hpp:37:7:void STM_MotorSystem::set_velocity(float)	16	static
+CAN.cpp:51:1:USER_CAN::USER_CAN(CAN_HandleTypeDef*)	80	static
+CAN.cpp:80:6:void USER_CAN::use_tx_CAN(uint32_t, float)	40	static
+CAN.cpp:91:9:uint8_t USER_CAN::get_id_CAN()	24	static
+CAN.cpp:100:6:void USER_CAN::set_id_CAN(GPIO_TypeDef*, GPIO_TypeDef*, GPIO_TypeDef*, GPIO_TypeDef*, uint16_t, uint16_t, uint16_t, uint16_t)	24	static
+CAN.cpp:119:6:void USER_CAN::set_dlc_CAN(uint32_t)	16	static
+CAN.cpp:123:6:void USER_CAN::set_rtr_CAN(uint32_t)	16	static
+CAN.cpp:127:6:void USER_CAN::set_ide_CAN(uint32_t)	16	static
+CAN.cpp:131:6:void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef*)	64	static

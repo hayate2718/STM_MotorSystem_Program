@@ -7,15 +7,18 @@
 #ifndef INC_STM_MOTORSYSTEM_H_
 #define INC_STM_MOTORSYSTEM_H_
 
+#include "main.h"
 #include <stdio.h>
 #include <CAN.hpp>
 #include <PID.hpp>
-#include "main.h"
+#include <PWM.hpp>
+#include <ENCODER.hpp>
 
 
 class STM_MotorSystem
 {
 private:
+
 	float velocity_ref; //エンコダからフィードバックされる速度
 	float velocity_tar; //外部MCUから入力される目標速度
 
@@ -27,7 +30,8 @@ public:
 	STM_MotorSystem(ADC_HandleTypeDef *_hadc,
 			CAN_HandleTypeDef *_hcan,
 			TIM_HandleTypeDef *_encoder_timer,
-			TIM_HandleTypeDef *_pwm_timer
+			TIM_HandleTypeDef *_pwm_timer,
+			uint32_t TIM_CHANNEL_n
 			); //コンストラクタ
 
 	void set_velocity(float velocity_tar){ //通信系から目標速度をもらう
@@ -48,6 +52,10 @@ public:
 	PID pid_torque;
 
 	USER_CAN use_can;
+
+	PWM use_pwm;
+
+	ENCODER use_encoder;
 
 };
 

@@ -48,7 +48,9 @@ typedef enum{
 
 }cmd;
 
-USER_CAN::USER_CAN(){
+USER_CAN::USER_CAN(CAN_HandleTypeDef * _use_hcan){
+
+	this->_use_hcan = _use_hcan;
 
 	CAN_FilterTypeDef filter;
 	_filter = &filter;
@@ -61,38 +63,69 @@ USER_CAN::USER_CAN(){
  	filter.FilterFIFOAssignment = 0; //rxdata to fifo0
 	filter.FilterMode = 0; //filter mode is mask mode
 	filter.FilterScale = 0; //filterscale is dual 16bits
-	filter.FilterIdHigh = set_id_CAN();
+	filter.FilterIdHigh = get_id_CAN();
 	filter.FilterMaskIdHigh = 15;
-	HAL_CAN_ConfigFilter(_use_hcan, _filter);
+	HAL_CAN_ConfigFilter(this->_use_hcan, _filter);
 
 	TxHeader.DLC = 4; //データ長（4byte）
 	TxHeader.IDE = 0; //標準識別子
 	TxHeader.RTR = 0; //データフレーム (現状モータシステムからホストにデータ要求はしないと思うから)
 	TxHeader.TransmitGlobalTime = DISABLE; //タイムスタンプ無効
 
+	HAL_CAN_Start(this->_use_hcan);
+	HAL_CAN_ActivateNotification(this->_use_hcan,CAN_IT_RX_FIFO0_MSG_PENDING);
+
 }
 
 void USER_CAN::use_tx_CAN(uint32_t cmd,float data){
-	CAN_TxHeaderTypeDef *TxHeader;
-	TxHeader = _TxHeader;
-
 	can_data tx;
 
 	uint32_t mailbox;
 
 	tx.low_data = data;
-	TxHeader->StdId = cmd+set_id_CAN();
+	_TxHeader->StdId = cmd+get_id_CAN();
 
-	HAL_CAN_AddTxMessage(_use_hcan,TxHeader, tx.low_data_raw,&mailbox);
+	HAL_CAN_AddTxMessage(_use_hcan,_TxHeader, tx.low_data_raw,&mailbox);
 }
 
-uint8_t USER_CAN::set_id_CAN(){
+uint8_t USER_CAN::get_id_CAN(){
 	id_set id;
 	id.bit0 = HAL_GPIO_ReadPin(GPIO_idbit0,GPIO_PIN_idbit0);
 	id.bit1 = HAL_GPIO_ReadPin(GPIO_idbit1,GPIO_PIN_idbit1);
 	id.bit2 = HAL_GPIO_ReadPin(GPIO_idbit2,GPIO_PIN_idbit2);
 	id.bit3 = HAL_GPIO_ReadPin(GPIO_idbit3,GPIO_PIN_idbit3);
 	return id.all_data;
+}
+
+void USER_CAN::set_id_CAN(GPIO_TypeDef * GPIO_idbit0,
+			GPIO_TypeDef * GPIO_idbit1,
+			GPIO_TypeDef * GPIO_idbit2,
+			GPIO_TypeDef * GPIO_idbit3,
+			uint16_t GPIO_PIN_idbit0,
+			uint16_t GPIO_PIN_idbit1,
+			uint16_t GPIO_PIN_idbit2,
+			uint16_t GPIO_PIN_idbit3
+			){
+	this->GPIO_idbit0 = GPIO_idbit0;
+	this->GPIO_idbit1 = GPIO_idbit1;
+	this->GPIO_idbit2 = GPIO_idbit2;
+	this->GPIO_idbit3 = GPIO_idbit3;
+	this->GPIO_PIN_idbit0 = GPIO_PIN_idbit0;
+	this->GPIO_PIN_idbit1 = GPIO_PIN_idbit1;
+	this->GPIO_PIN_idbit2 = GPIO_PIN_idbit2;
+	this->GPIO_PIN_idbit3 = GPIO_PIN_idbit3;
+}
+
+void USER_CAN::set_dlc_CAN(uint32_t dlc){
+	_TxHeader->DLC = dlc;
+}
+
+void USER_CAN::set_rtr_CAN(uint32_t rtr){
+	_TxHeader->RTR = rtr;
+}
+
+void USER_CAN::set_ide_CAN(uint32_t ide){
+	_TxHeader->IDE = ide;
 }
 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan){
