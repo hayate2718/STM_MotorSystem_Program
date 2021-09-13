@@ -1,2 +1,2 @@
 PID.hpp:36:8:PID::PID(float, float, float, float)	32	static
-STM_MotorSystem_init.cpp:10:1:STM_MotorSystem::STM_MotorSystem()	16	static
+STM_MotorSystem_init.cpp:10:1:STM_MotorSystem::STM_MotorSystem(ADC_HandleTypeDef*, CAN_HandleTypeDef*, TIM_HandleTypeDef*, TIM_HandleTypeDef*)	24	static

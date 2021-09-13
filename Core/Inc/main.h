@@ -61,14 +61,7 @@ void Error_Handler(void);
 
 /* Private defines -----------------------------------------------------------*/
 /* USER CODE BEGIN Private defines */
-extern ADC_HandleTypeDef hadc2;
 
-extern CAN_HandleTypeDef hcan;
-
-extern TIM_HandleTypeDef htim2;
-extern TIM_HandleTypeDef htim3;
-
-extern UART_HandleTypeDef huart1;
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

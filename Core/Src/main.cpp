@@ -50,7 +50,7 @@ TIM_HandleTypeDef htim3;
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
-STM_MotorSystem *_ms;
+STM_MotorSystem *_ms; //割り込みハンドラに同一のインスタンスを渡すためのポインタ
 
 /* USER CODE END PV */
 
@@ -105,7 +105,7 @@ int main(void)
   MX_TIM3_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
-  STM_MotorSystem use_ms;
+  STM_MotorSystem use_ms(&hadc2,&hcan,&htim2,&htim3);
   _ms = &use_ms;
   /* USER CODE END 2 */
 

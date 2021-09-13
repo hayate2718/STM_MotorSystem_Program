@@ -4,8 +4,9 @@
  *  Created on: 2021/09/11
  *      Author: 0_hayate
  */
-#include <STM_MotorSystem.hpp>
+
 #include <CAN.hpp>
+#include <STM_MotorSystem.hpp>
 
 typedef enum{
 	SET_VELOCITY = 0xf010,
@@ -22,6 +23,8 @@ typedef enum{
 	SET_PPR = 0xf220, //エンコダ分解能
 	SET_KT = 0xf230, //モタトルク係数
 
+	SET_COAST = 0xf310,
+
 	GET_VELOCITY = 0xe010,
 	GET_VELOCITY_P = 0xe020,
 	GET_VELOCITY_I = 0xe030,
@@ -33,8 +36,15 @@ typedef enum{
 
 	GET_CURRENT = 0xe210,
 
-	SYSTEM_INIT = 0x0310,
-	SYSTEM_START = 0x0320
+	GET_FF1_STATE = 0xe310,
+	GET_FF2_STATE = 0xe320,
+
+	SYSTEM_INIT = 0x1010,
+	SYSTEM_START = 0x1020,
+
+	ALERT_FF1 = 0x0010,
+	ALERT_FF2 = 0x0020,
+	ALERT_FF1_FF2 = 0x0030,
 
 }cmd;
 
@@ -78,10 +88,10 @@ void USER_CAN::use_tx_CAN(uint32_t cmd,float data){
 
 uint8_t USER_CAN::set_id_CAN(){
 	id_set id;
-	id.bit0 = HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_1);
-	id.bit1 = HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_8);
-	id.bit2 = HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_9);
-	id.bit3 = HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_10);
+	id.bit0 = HAL_GPIO_ReadPin(GPIO_idbit0,GPIO_PIN_idbit0);
+	id.bit1 = HAL_GPIO_ReadPin(GPIO_idbit1,GPIO_PIN_idbit1);
+	id.bit2 = HAL_GPIO_ReadPin(GPIO_idbit2,GPIO_PIN_idbit2);
+	id.bit3 = HAL_GPIO_ReadPin(GPIO_idbit3,GPIO_PIN_idbit3);
 	return id.all_data;
 }
 

@@ -24,7 +24,11 @@ private:
 	float volt; //電源電圧
 
 public:
-	STM_MotorSystem(); //コンストラクタ
+	STM_MotorSystem(ADC_HandleTypeDef *_hadc,
+			CAN_HandleTypeDef *_hcan,
+			TIM_HandleTypeDef *_encoder_timer,
+			TIM_HandleTypeDef *_pwm_timer
+			); //コンストラクタ
 
 	void set_velocity(float velocity_tar){ //通信系から目標速度をもらう
 		this->velocity_tar = velocity_tar;
@@ -47,6 +51,6 @@ public:
 
 };
 
-extern STM_MotorSystem *_ms;
+extern STM_MotorSystem *_ms; //割り込みハンドラに同一のインスタンスを渡すためのポインタ(main program で宣言してあげて)
 
 #endif /* INC_STM_MOTORSYSTEM_H_ */

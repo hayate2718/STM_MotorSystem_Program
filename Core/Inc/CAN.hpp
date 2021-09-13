@@ -51,6 +51,18 @@ public :
 
 	CAN_HandleTypeDef * _use_hcan;
 
+	GPIO_TypeDef * GPIO_idbit0; //基板スイッチにつながるGPIOを指定する
+	uint16_t GPIO_PIN_idbit0;
+
+	GPIO_TypeDef * GPIO_idbit1;
+	uint16_t GPIO_PIN_idbit1;
+
+	GPIO_TypeDef * GPIO_idbit2;
+	uint16_t GPIO_PIN_idbit2;
+
+	GPIO_TypeDef * GPIO_idbit3;
+	uint16_t GPIO_PIN_idbit3;
+
 };
 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan); //受信割り込みコールバック
