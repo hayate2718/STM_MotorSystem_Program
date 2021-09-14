@@ -13,31 +13,23 @@ PWM::PWM(TIM_HandleTypeDef *_pwm_timer,uint32_t TIM_CHANNEL_n ){ //TIMxCHn n=1,2
 
 	switch(TIM_CHANNEL_n){
 	case TIM_CHANNEL_1:
-#ifndef ccr
-#define ccr this->_pwm_timer->Instance->CCR1
-#endif
-		ccr = 0;
+		CCRn = & this->_pwm_timer->Instance->CCR1;
+		*CCRn = 0;
 		break;
 
 	case TIM_CHANNEL_2:
-#ifndef ccr
-#define ccr this->_pwm_timer->Instance->CCR2
-#endif
-		ccr = 0;
+		CCRn = & this->_pwm_timer->Instance->CCR2;
+		*CCRn = 0;
 		break;
 
 	case TIM_CHANNEL_3:
-#ifndef ccr
-#define ccr this->_pwm_timer->Instance->CCR3
-#endif
-		ccr = 0;
+		CCRn = & this->_pwm_timer->Instance->CCR3;
+		*CCRn = 0;
 		break;
 
 	case TIM_CHANNEL_4:
-#ifndef ccr
-#define ccr this->_pwm_timer->Instance->CCR4
-#endif
-		ccr = 0;
+		CCRn = & this->_pwm_timer->Instance->CCR4;
+		*CCRn = 0;
 		break;
 
 	default:
@@ -59,9 +51,9 @@ void PWM::PWM_start(float voltage){
 		buf = arr;
 	}
 
-	ccr = buf;
+	*CCRn = buf;
 }
 
 void PWM::PWM_stop(){
-	ccr = 0;
+	*CCRn = 0;
 }

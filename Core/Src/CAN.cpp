@@ -132,7 +132,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan){
 	CAN_RxHeaderTypeDef RxHeader;
 	can_data rx;
 	uint32_t cmd;
-	STM_MotorSystem *ms = _ms;
+	STM_MotorSystem *ms = STM_MotorSystem::_ms;
 
 	if(HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, rx.low_data_raw) == HAL_OK){
 		cmd = RxHeader.StdId & 0xfff0;

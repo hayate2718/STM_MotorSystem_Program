@@ -5,7 +5,6 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../Core/Src/main.c \
 ../Core/Src/stm32f3xx_hal_msp.c \
 ../Core/Src/stm32f3xx_it.c \
 ../Core/Src/syscalls.c \
@@ -13,6 +12,7 @@ C_SRCS += \
 ../Core/Src/system_stm32f3xx.c 
 
 CPP_SRCS += \
+../Core/Src/ADC.cpp \
 ../Core/Src/CAN.cpp \
 ../Core/Src/ENCODER.cpp \
 ../Core/Src/PWM.cpp \
@@ -20,7 +20,6 @@ CPP_SRCS += \
 ../Core/Src/main.cpp 
 
 C_DEPS += \
-./Core/Src/main.d \
 ./Core/Src/stm32f3xx_hal_msp.d \
 ./Core/Src/stm32f3xx_it.d \
 ./Core/Src/syscalls.d \
@@ -28,6 +27,7 @@ C_DEPS += \
 ./Core/Src/system_stm32f3xx.d 
 
 OBJS += \
+./Core/Src/ADC.o \
 ./Core/Src/CAN.o \
 ./Core/Src/ENCODER.o \
 ./Core/Src/PWM.o \
@@ -40,6 +40,7 @@ OBJS += \
 ./Core/Src/system_stm32f3xx.o 
 
 CPP_DEPS += \
+./Core/Src/ADC.d \
 ./Core/Src/CAN.d \
 ./Core/Src/ENCODER.d \
 ./Core/Src/PWM.d \

@@ -13,6 +13,7 @@
 #include <PID.hpp>
 #include <PWM.hpp>
 #include <ENCODER.hpp>
+#include <ADC.hpp>
 
 
 class STM_MotorSystem
@@ -47,18 +48,20 @@ public:
 	void controller_velocity(); //速度制御を行う
 	void controller_torque(); //トルク制御を行う
 
+	static STM_MotorSystem *_ms;
+
 	PID pid_velocity;
 
 	PID pid_torque;
 
-	USER_CAN use_can;
+	//USER_CAN use_can;
 
-	PWM use_pwm;
+	//PWM use_pwm;
 
-	ENCODER use_encoder;
+	//ENCODER use_encoder;
+
+	ADC use_adc;
 
 };
-
-extern STM_MotorSystem *_ms; //割り込みハンドラに同一のインスタンスを渡すためのポインタ(main program で宣言してあげて)
 
 #endif /* INC_STM_MOTORSYSTEM_H_ */

@@ -33,7 +33,7 @@ Core/Src/STM_MotorSystem_init.o: ../Core/Src/STM_MotorSystem_init.cpp \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart_ex.h \
  ../Core/Inc/CAN.hpp ../Core/Inc/PID.hpp ../Core/Inc/PWM.hpp \
- ../Core/Inc/ENCODER.hpp
+ ../Core/Inc/ENCODER.hpp ../Core/Inc/ADC.hpp
 
 ../Core/Inc/STM_MotorSystem.hpp:
 
@@ -110,3 +110,5 @@ Core/Src/STM_MotorSystem_init.o: ../Core/Src/STM_MotorSystem_init.cpp \
 ../Core/Inc/PWM.hpp:
 
 ../Core/Inc/ENCODER.hpp:
+
+../Core/Inc/ADC.hpp:

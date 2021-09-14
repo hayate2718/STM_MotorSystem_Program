@@ -15,6 +15,8 @@ private:
 	float supply_voltage; //電源電圧
 
 	TIM_HandleTypeDef *_pwm_timer;
+
+	__IO uint32_t * CCRn;
 public:
 	PWM(TIM_HandleTypeDef *_pwm_timer, uint32_t TIM_CHANNEL_n ); //TIMxCHn n=1,2,3...
 

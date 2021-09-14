@@ -32,7 +32,7 @@ Core/Src/CAN.o: ../Core/Src/CAN.cpp ../Core/Inc/CAN.hpp \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart_ex.h \
  ../Core/Inc/STM_MotorSystem.hpp ../Core/Inc/PID.hpp ../Core/Inc/PWM.hpp \
- ../Core/Inc/ENCODER.hpp
+ ../Core/Inc/ENCODER.hpp ../Core/Inc/ADC.hpp
 
 ../Core/Inc/CAN.hpp:
 
@@ -109,3 +109,5 @@ Core/Src/CAN.o: ../Core/Src/CAN.cpp ../Core/Inc/CAN.hpp \
 ../Core/Inc/PWM.hpp:
 
 ../Core/Inc/ENCODER.hpp:
+
+../Core/Inc/ADC.hpp:
