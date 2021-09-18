@@ -1,10 +1,18 @@
-PID.hpp:42:13:void PID::PID_set_p(float)	16	static
-STM_MotorSystem.hpp:38:7:void STM_MotorSystem::set_velocity(float)	16	static
-CAN.cpp:51:1:USER_CAN::USER_CAN(CAN_HandleTypeDef*)	80	static
-CAN.cpp:80:6:void USER_CAN::use_tx_CAN(uint32_t, float)	40	static
-CAN.cpp:91:9:uint8_t USER_CAN::get_id_CAN()	24	static
-CAN.cpp:100:6:void USER_CAN::set_id_CAN(GPIO_TypeDef*, GPIO_TypeDef*, GPIO_TypeDef*, GPIO_TypeDef*, uint16_t, uint16_t, uint16_t, uint16_t)	24	static
-CAN.cpp:119:6:void USER_CAN::set_dlc_CAN(uint32_t)	16	static
-CAN.cpp:123:6:void USER_CAN::set_rtr_CAN(uint32_t)	16	static
-CAN.cpp:127:6:void USER_CAN::set_ide_CAN(uint32_t)	16	static
-CAN.cpp:131:6:void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef*)	64	static
+PID.hpp:41:13:void PID::PID_set_p(float)	16	static
+PID.hpp:45:13:void PID::PID_set_i(float)	16	static
+PID.hpp:49:13:void PID::PID_set_d(float)	16	static
+STM_MotorSystem.hpp:76:7:void STM_MotorSystem::set_velocity(float)	16	static
+STM_MotorSystem.hpp:87:8:float STM_MotorSystem::com_get_velocity()	16	static
+STM_MotorSystem.hpp:95:8:float STM_MotorSystem::com_get_current()	16	static
+STM_MotorSystem.hpp:120:7:void STM_MotorSystem::set_volt(float)	16	static
+STM_MotorSystem.hpp:124:7:void STM_MotorSystem::set_kt(float)	16	static
+STM_MotorSystem.hpp:128:7:void STM_MotorSystem::set_ppr(float)	16	static
+STM_MotorSystem.hpp:132:7:void STM_MotorSystem::set_current_limit(float)	16	static
+CAN.cpp:12:1:USER_CAN::USER_CAN(CAN_HandleTypeDef*)	80	static
+CAN.cpp:41:6:void USER_CAN::use_tx_CAN(uint32_t, float)	40	static
+CAN.cpp:52:9:uint8_t USER_CAN::get_id_CAN()	24	static
+CAN.cpp:61:6:void USER_CAN::set_id_CAN(GPIO_TypeDef*, GPIO_TypeDef*, GPIO_TypeDef*, GPIO_TypeDef*, uint16_t, uint16_t, uint16_t, uint16_t)	24	static
+CAN.cpp:80:6:void USER_CAN::set_dlc_CAN(uint32_t)	16	static
+CAN.cpp:84:6:void USER_CAN::set_rtr_CAN(uint32_t)	16	static
+CAN.cpp:88:6:void USER_CAN::set_ide_CAN(uint32_t)	16	static
+CAN.cpp:92:6:void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef*)	72	static

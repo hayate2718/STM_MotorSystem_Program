@@ -8,45 +8,6 @@
 #include <CAN.hpp>
 #include <STM_MotorSystem.hpp>
 
-typedef enum{
-	SET_VELOCITY = 0xf010,
-	SET_VELOCITY_P = 0xf020,
-	SET_VELOCITY_I = 0xf030,
-	SET_VELOCITY_D = 0xf040,
-
-	SET_TORQUE = 0xf110,
-	SET_TORQUE_P = 0xf120,
-	SET_TORQUE_I = 0xf130,
-	SET_TORQUE_D = 0xf140,
-
-	SET_VOLTAGE =0xf210, //電源電圧
-	SET_PPR = 0xf220, //エンコダ分解能
-	SET_KT = 0xf230, //モタトルク係数
-
-	SET_COAST = 0xf310,
-
-	GET_VELOCITY = 0xe010,
-	GET_VELOCITY_P = 0xe020,
-	GET_VELOCITY_I = 0xe030,
-	GET_VELOCITY_D = 0xe040,
-
-	GET_TORQUE_P = 0xe110,
-	GET_TORQUE_I = 0xe120,
-	GET_TORQUE_D = 0xe130,
-
-	GET_CURRENT = 0xe210,
-
-	GET_FF1_STATE = 0xe310,
-	GET_FF2_STATE = 0xe320,
-
-	SYSTEM_INIT = 0x1010,
-	SYSTEM_START = 0x1020,
-
-	ALERT_FF1 = 0x0010,
-	ALERT_FF2 = 0x0020,
-	ALERT_FF1_FF2 = 0x0030,
-
-}cmd;
 
 USER_CAN::USER_CAN(CAN_HandleTypeDef * _use_hcan){
 
@@ -128,7 +89,7 @@ void USER_CAN::set_ide_CAN(uint32_t ide){
 	_TxHeader->IDE = ide;
 }
 
-void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan){
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan){ //受信割り込みコールバック
 	CAN_RxHeaderTypeDef RxHeader;
 	can_data rx;
 	uint32_t cmd;
@@ -146,24 +107,47 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan){
 				break;
 
 			case SET_VELOCITY_I:
+				ms->pid_velocity.PID_set_i(rx.low_data);
 				break;
 
 			case SET_VELOCITY_D:
+				ms->pid_velocity.PID_set_d(rx.low_data);
 				break;
 
 			case SET_TORQUE:
+
 				break;
 
 			case SET_TORQUE_P:
+				ms->pid_torque.PID_set_p(rx.low_data);
 				break;
 
 			case SET_TORQUE_I:
+				ms->pid_torque.PID_set_i(rx.low_data);
 				break;
 
 			case SET_TORQUE_D:
+				ms->pid_torque.PID_set_d(rx.low_data);
+				break;
+
+			case SET_VOLTAGE:
+				ms->set_volt(rx.low_data);
+				break;
+
+			case SET_PPR:
+				ms->set_ppr(rx.low_data);
+				break;
+
+			case SET_KT:
+				ms->set_kt(rx.low_data);
+				break;
+
+			case SET_CURRENT_LIMIT:
+				ms->set_current_limit(rx.low_data);
 				break;
 
 			case GET_VELOCITY:
+				ms->use_can.use_tx_CAN(GET_VELOCITY,ms->com_get_velocity());
 				break;
 
 			case GET_VELOCITY_P:
@@ -185,6 +169,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan){
 				break;
 
 			case GET_CURRENT:
+				ms->use_can.use_tx_CAN(GET_CURRENT,ms->com_get_current());
 				break;
 
 			case SYSTEM_INIT:

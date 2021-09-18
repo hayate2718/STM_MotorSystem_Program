@@ -1,3 +1,3 @@
 PWM.cpp:11:1:PWM::PWM(TIM_HandleTypeDef*, uint32_t)	24	static
-PWM.cpp:43:6:void PWM::PWM_start(float)	24	static
-PWM.cpp:57:6:void PWM::PWM_stop()	16	static
+PWM.cpp:46:6:void PWM::PWM_out(float)	24	static
+PWM.cpp:59:6:void PWM::PWM_stop()	16	static

@@ -70,7 +70,7 @@ public:
 
 	//void ADC_current_fillter(); デジタルフィルタについて学習後実装予定
 
-	int32_t ADC_get_current();
+	float ADC_get_current();
 
 	void ADC_start(){
 		HAL_ADC_Start(_hadc);

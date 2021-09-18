@@ -1,0 +1,1 @@
+STM_MotorSystem_init.cpp:10:1:STM_MotorSystem::STM_MotorSystem(ADC_HandleTypeDef*, CAN_HandleTypeDef*, TIM_HandleTypeDef*, TIM_HandleTypeDef*, uint32_t)	8	static

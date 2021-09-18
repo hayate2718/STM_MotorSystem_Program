@@ -16,6 +16,7 @@ CPP_SRCS += \
 ../Core/Src/CAN.cpp \
 ../Core/Src/ENCODER.cpp \
 ../Core/Src/PWM.cpp \
+../Core/Src/STM_MotorSystem_control.cpp \
 ../Core/Src/STM_MotorSystem_init.cpp \
 ../Core/Src/main.cpp 
 
@@ -31,6 +32,7 @@ OBJS += \
 ./Core/Src/CAN.o \
 ./Core/Src/ENCODER.o \
 ./Core/Src/PWM.o \
+./Core/Src/STM_MotorSystem_control.o \
 ./Core/Src/STM_MotorSystem_init.o \
 ./Core/Src/main.o \
 ./Core/Src/stm32f3xx_hal_msp.o \
@@ -44,6 +46,7 @@ CPP_DEPS += \
 ./Core/Src/CAN.d \
 ./Core/Src/ENCODER.d \
 ./Core/Src/PWM.d \
+./Core/Src/STM_MotorSystem_control.d \
 ./Core/Src/STM_MotorSystem_init.d \
 ./Core/Src/main.d 
 

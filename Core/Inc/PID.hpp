@@ -29,8 +29,7 @@ public:
 	float PID_get_p();
 	float PID_get_i();
 	float PID_get_d();
-	void PID_error(float error);
-	float PID_controller();
+	float PID_controller(float error);
 };
 
 inline PID::PID(float p,float i,float d,float dt):
@@ -51,6 +50,10 @@ inline void PID::PID_set_d(float d){
 	this->d = d;
 }
 
+inline void PID::PID_set_dt(float dt){
+	this->dt = dt;
+}
+
 inline float PID::PID_get_p(){
 	float p;
 	p = this->p;
@@ -69,11 +72,8 @@ inline float PID::PID_get_d(){
 	return d;
 }
 
-inline void PID::PID_error(float error){
+inline float PID::PID_controller(float error){
 	this->error = error;
-}
-
-inline float PID::PID_controller(){
 	float MV = 0; //PIDコントローラ操作量
 	float p_mv = 0;
 	float i_mv = 0;
@@ -83,10 +83,10 @@ inline float PID::PID_controller(){
 
 	p_mv = this->p*this->error;
 	i_mv = this->i*i_sum*this->dt;
-	d_mv = this->d*(error-error_before)/dt;
+	d_mv = this->d*(this->error-error_before)/dt;
 
 	MV = p_mv+i_mv+d_mv;
-	error_before = error;
+	error_before = this->error;
 
 	return MV;
 }

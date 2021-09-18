@@ -38,22 +38,24 @@ PWM::PWM(TIM_HandleTypeDef *_pwm_timer,uint32_t TIM_CHANNEL_n ){ //TIMxCHn n=1,2
 	}
 
 	HAL_TIM_PWM_Start(_pwm_timer, TIM_CHANNEL_n);
+
+	this->arr = this->_pwm_timer->Instance->ARR;
+
 }
 
-void PWM::PWM_start(float voltage){
-	uint32_t arr;
+void PWM::PWM_out(float voltage){
+
 	uint32_t buf;
 
-	arr = this->_pwm_timer->Instance->ARR;
 	buf = arr / supply_voltage * voltage;
 
-	if(buf > arr){
+	if(buf > arr){ //pwmdutyリミット
 		buf = arr;
 	}
 
 	*CCRn = buf;
 }
 
-void PWM::PWM_stop(){
+void PWM::PWM_stop(){ //pwmタイマ自体は動作している。dutyを0にしているだけ
 	*CCRn = 0;
 }

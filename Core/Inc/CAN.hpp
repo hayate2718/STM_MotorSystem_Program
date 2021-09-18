@@ -13,6 +13,47 @@
 
 #define _MAX_DLC 8
 
+typedef enum{
+	SET_VELOCITY = 0xf010,
+	SET_VELOCITY_P = 0xf020,
+	SET_VELOCITY_I = 0xf030,
+	SET_VELOCITY_D = 0xf040,
+
+	SET_TORQUE = 0xf110,
+	SET_TORQUE_P = 0xf120,
+	SET_TORQUE_I = 0xf130,
+	SET_TORQUE_D = 0xf140,
+
+	SET_VOLTAGE =0xf210, //電源電圧
+	SET_PPR = 0xf220, //エンコダ分解能
+	SET_KT = 0xf230, //モタトルク係数
+	SET_CURRENT_LIMIT = 0xf240,
+
+	SET_COAST = 0xf310,
+
+	GET_VELOCITY = 0xe010,
+	GET_VELOCITY_P = 0xe020,
+	GET_VELOCITY_I = 0xe030,
+	GET_VELOCITY_D = 0xe040,
+
+	GET_TORQUE_P = 0xe110,
+	GET_TORQUE_I = 0xe120,
+	GET_TORQUE_D = 0xe130,
+
+	GET_CURRENT = 0xe210,
+
+	GET_FF1_STATE = 0xe310,
+	GET_FF2_STATE = 0xe320,
+
+	SYSTEM_INIT = 0x1010,
+	SYSTEM_START = 0x1020,
+
+	ALERT_FF1 = 0x0010,
+	ALERT_FF2 = 0x0020,
+	ALERT_FF1_FF2 = 0x0030,
+
+}cmd;
+
 typedef union{
 	struct {
 		union{
@@ -81,6 +122,5 @@ public :
 
 };
 
-void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan); //受信割り込みコールバック
 
 #endif /* INC_CAN_HPP_ */

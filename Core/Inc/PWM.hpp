@@ -17,10 +17,12 @@ private:
 	TIM_HandleTypeDef *_pwm_timer;
 
 	__IO uint32_t * CCRn;
+
+	uint32_t arr;
 public:
 	PWM(TIM_HandleTypeDef *_pwm_timer, uint32_t TIM_CHANNEL_n ); //TIMxCHn n=1,2,3...
 
-	void PWM_start(float voltage);
+	void PWM_out(float voltage);
 	void PWM_stop();
 
 };

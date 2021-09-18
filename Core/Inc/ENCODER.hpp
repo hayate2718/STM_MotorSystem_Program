@@ -13,12 +13,17 @@
 class ENCODER{
 private :
 	uint32_t ENCODER_count;
+	uint32_t ofset_count;
 	TIM_HandleTypeDef *_encoder_timer;
 
 public :
 	ENCODER(TIM_HandleTypeDef *_encoder_timer);
 
 	uint32_t get_count();
+
+	uint32_t get_ofset();
+
+	void init_ENCODER();
 
 };
 
