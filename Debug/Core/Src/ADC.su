@@ -1,3 +1,4 @@
+ADC.hpp:75:7:void ADC::ADC_start()	16	static
 ADC.cpp:10:1:ADC::ADC(ADC_HandleTypeDef*, float)	32	static
-ADC.cpp:40:6:void ADC::ADC_calibration()	24	static
-ADC.cpp:55:7:float ADC::ADC_get_current()	24	static
+ADC.cpp:43:6:void ADC::ADC_calibration()	24	static
+ADC.cpp:57:7:float ADC::ADC_get_current()	24	static

@@ -1,5 +1,6 @@
 PID.hpp:35:8:PID::PID(float, float, float, float)	32	static
 PID.hpp:53:13:void PID::PID_set_dt(float)	16	static
+ADC.hpp:75:7:void ADC::ADC_start()	16	static
 STM_MotorSystem_init.cpp:10:1:STM_MotorSystem::STM_MotorSystem(ADC_HandleTypeDef*, CAN_HandleTypeDef*, TIM_HandleTypeDef*, TIM_HandleTypeDef*, uint32_t, TIM_HandleTypeDef*)	24	static
-STM_MotorSystem_init.cpp:75:6:void STM_MotorSystem::STM_MotorSystem_init()	16	static
-STM_MotorSystem_init.cpp:84:6:void STM_MotorSystem::STM_MotorSystem_start()	16	static
+STM_MotorSystem_init.cpp:78:6:void STM_MotorSystem::STM_MotorSystem_init()	16	static
+STM_MotorSystem_init.cpp:87:6:void STM_MotorSystem::STM_MotorSystem_start()	16	static

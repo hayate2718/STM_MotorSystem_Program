@@ -1,9 +1,11 @@
 PID.hpp:75:14:float PID::PID_controller(float)	32	static
 STM_MotorSystem_control.cpp:10:6:void STM_MotorSystem::motor_control()	16	static
-STM_MotorSystem_control.cpp:54:6:void STM_MotorSystem::controller_velocity()	24	static
-STM_MotorSystem_control.cpp:83:6:void STM_MotorSystem::controller_torque()	32	static
-STM_MotorSystem_control.cpp:106:7:float STM_MotorSystem::get_velocity()	32	static
-STM_MotorSystem_control.cpp:116:7:float STM_MotorSystem::get_current()	16	static
-STM_MotorSystem_control.cpp:121:6:void STM_MotorSystem::set_dir_pin(GPIO_TypeDef*, uint16_t)	24	static
-STM_MotorSystem_control.cpp:126:6:void STM_MotorSystem::set_dir(GPIO_PinState)	16	static
-STM_MotorSystem_control.cpp:131:6:void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef*)	24	static
+STM_MotorSystem_control.cpp:60:6:void STM_MotorSystem::controller_velocity()	24	static
+STM_MotorSystem_control.cpp:91:6:void STM_MotorSystem::controller_torque()	32	static
+STM_MotorSystem_control.cpp:116:7:float STM_MotorSystem::get_velocity()	40	static
+STM_MotorSystem_control.cpp:129:7:float STM_MotorSystem::get_current()	16	static
+STM_MotorSystem_control.cpp:136:6:void STM_MotorSystem::set_dir_pin(GPIO_TypeDef*, uint16_t)	24	static
+STM_MotorSystem_control.cpp:143:6:void STM_MotorSystem::set_dir(GPIO_PinState)	16	static
+STM_MotorSystem_control.cpp:148:6:void STM_MotorSystem::set_coast()	16	static
+STM_MotorSystem_control.cpp:154:6:void STM_MotorSystem::set_coast_pin(GPIO_TypeDef*, uint16_t)	24	static
+STM_MotorSystem_control.cpp:160:6:void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef*)	24	static

@@ -21,6 +21,7 @@
 typedef enum {
 	VELOCITY_CONTROL = 0xFFFF,
 	TORQUE_CONTROL = 0x0FFF,
+	COAST_CONTROL = 0x00FF,
 	SYSTEM_STOP = 0x0000
 }mode;
 
@@ -49,6 +50,9 @@ private:
 	GPIO_TypeDef *GPIO_dir;
 	uint16_t GPIO_PIN_dir;
 
+	GPIO_TypeDef *GPIO_coast;
+	uint16_t GPIO_PIN_coast;
+
 	uint8_t control_switch;
 
 	uint32_t before_encoder_cnt;
@@ -56,6 +60,8 @@ private:
 	uint32_t MotorSystem_mode_buf;
 
 	uint32_t MotorSystem_mode;
+
+
 
 	TIM_HandleTypeDef *_control_timer;
 
@@ -133,7 +139,13 @@ public:
 		this->current_limit = current_limit;
 	}
 
+	void set_coast();
+
+	void set_coast_pin(GPIO_TypeDef *GPIO_coast,uint16_t GPIO_PIN_coast);
+
 	static STM_MotorSystem *_ms;
+
+
 
 	PID pid_velocity;
 

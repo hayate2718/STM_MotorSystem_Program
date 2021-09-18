@@ -19,10 +19,10 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-
+#include <STM_MotorSystem.hpp>
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include <STM_MotorSystem.hpp>
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -107,9 +107,7 @@ int main(void)
   MX_USART1_UART_Init();
   MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
-  STM_MotorSystem use_ms(&hadc2,&hcan,&htim2,&htim3,TIM_CHANNEL_3,&htim1);
-      use_ms.use_adc.ADC_calibration();
-      use_ms.use_adc.ADC_start();
+  STM_MotorSystem use_ms(&hadc2,&hcan,&htim2,&htim3,TIM_CHANNEL_2,&htim1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -213,7 +211,7 @@ static void MX_ADC2_Init(void)
   sConfig.Channel = ADC_CHANNEL_2;
   sConfig.Rank = ADC_REGULAR_RANK_1;
   sConfig.SingleDiff = ADC_SINGLE_ENDED;
-  sConfig.SamplingTime = ADC_SAMPLETIME_1CYCLE_5;
+  sConfig.SamplingTime = ADC_SAMPLETIME_7CYCLES_5;
   sConfig.OffsetNumber = ADC_OFFSET_NONE;
   sConfig.Offset = 0;
   if (HAL_ADC_ConfigChannel(&hadc2, &sConfig) != HAL_OK)

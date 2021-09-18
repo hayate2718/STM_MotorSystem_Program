@@ -115,7 +115,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan){ //受信割り�
 				break;
 
 			case SET_TORQUE:
-
+				ms->set_torque(rx.low_data);
 				break;
 
 			case SET_TORQUE_P:
@@ -173,9 +173,11 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan){ //受信割り�
 				break;
 
 			case SYSTEM_INIT:
+				ms->STM_MotorSystem_init();
 				break;
 
 			case SYSTEM_START:
+				ms->STM_MotorSystem_start();
 				break;
 			}
 

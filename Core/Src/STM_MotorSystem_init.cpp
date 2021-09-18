@@ -37,6 +37,7 @@ use_encoder(_encoder_timer),
 use_adc(_hadc,3.3)
 
 {
+
 	_ms = this;
 
 	this->_control_timer = _control_timer;
@@ -69,6 +70,8 @@ use_adc(_hadc,3.3)
 	//a3921のdirピンの操作ピン設定
 	set_dir_pin(GPIOB,GPIO_PIN_4);
 
+	//coast機能ピン設定
+	set_coast_pin(GPIOA,GPIO_PIN_7);
 
 }
 
@@ -77,21 +80,27 @@ void STM_MotorSystem::STM_MotorSystem_init(){
 	this->use_adc.ADC_calibration();
 	this->use_encoder.init_ENCODER();
 	this->use_pwm.PWM_stop();
-
+	HAL_GPIO_WritePin(this->GPIO_coast,this->GPIO_PIN_coast,GPIO_PIN_RESET);
 	this->MotorSystem_mode_buf = SYSTEM_STOP;
 }
 
 void STM_MotorSystem::STM_MotorSystem_start(){
+
+	HAL_GPIO_WritePin(this->GPIO_coast,this->GPIO_PIN_coast,GPIO_PIN_RESET);
+	__HAL_TIM_CLEAR_FLAG(_control_timer, TIM_FLAG_UPDATE);
+
 	switch(MotorSystem_mode_buf){
 	case VELOCITY_CONTROL:
 		this->MotorSystem_mode = VELOCITY_CONTROL;
 		this->control_switch = 0;
+		this->use_adc.ADC_start();
 		HAL_TIM_Base_Start_IT(_control_timer);
 		break;
 
 	case TORQUE_CONTROL:
 		this->MotorSystem_mode = TORQUE_CONTROL;
 		this->control_switch = 0;
+		this->use_adc.ADC_start();
 		HAL_TIM_Base_Start_IT(_control_timer);
 		break;
 
@@ -100,7 +109,16 @@ void STM_MotorSystem::STM_MotorSystem_start(){
 		this->control_switch = 0;
 		HAL_TIM_Base_Stop_IT(_control_timer);
 		this->use_pwm.PWM_stop();
+		//this->use_adc.ADC_stop();
+		break;
 
+	case COAST_CONTROL:
+		this->MotorSystem_mode = COAST_CONTROL;
+		this->control_switch = 0;
+		HAL_TIM_Base_Stop_IT(_control_timer);
+		this->use_pwm.PWM_stop();
+		HAL_GPIO_WritePin(this->GPIO_coast,this->GPIO_PIN_coast,GPIO_PIN_SET);
+		//this->use_adc.ADC_stop();
 		break;
 	}
 }

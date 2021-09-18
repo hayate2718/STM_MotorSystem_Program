@@ -10,46 +10,52 @@
 void STM_MotorSystem::motor_control(){
 	control_switch++;
 	switch(this->MotorSystem_mode){
-		case VELOCITY_CONTROL:
-			switch(control_switch){
-				case 1:
-					this->controller_velocity();
-					this->controller_torque();
-					break;
-				case 2:
-					this->controller_torque();
-					break;
-				case 3:
-					this->controller_torque();
-					break;
-				case 4:
-					this->controller_torque();
-					control_switch = 0;
-					break;
-			}
+	case VELOCITY_CONTROL:
+		{switch(control_switch){
+		case 1:
+			this->controller_velocity();
+			this->controller_torque();
 			break;
+		case 2:
+			this->controller_torque();
+			break;
+		case 3:
+			this->controller_torque();
+			break;
+		case 4:
+			this->controller_torque();
+			control_switch = 0;
+			break;
+		}}break;
 
-		case TORQUE_CONTROL:
-			this->current_tar = this->current_buf;
-			switch(control_switch){
-				case 1:
-					this->controller_torque();
-					break;
-				case 2:
-					this->controller_torque();
-					break;
-				case 3:
-					this->controller_torque();
-					break;
-				case 4:
-					this->controller_torque();
-					control_switch = 0;
-					break;
-			}
-		break;
+	case TORQUE_CONTROL:
+		this->current_tar = this->current_buf;
+		{switch(control_switch){
+		case 1:
+			this->controller_torque();
+			break;
+		case 2:
+			this->controller_torque();
+			break;
+		case 3:
+			this->controller_torque();
+			break;
+		case 4:
+			this->controller_torque();
+			control_switch = 0;
+			break;
+		}}break;
+
+
+	default:
+		control_switch = 0;
+			break;
 
 	}
 }
+
+
+
 
 void STM_MotorSystem::controller_velocity(){
 	float e_velocity;
@@ -80,6 +86,8 @@ void STM_MotorSystem::controller_velocity(){
 	return;
 }
 
+
+
 void STM_MotorSystem::controller_torque(){
 	float e_current;
 	float volt_tar;
@@ -103,28 +111,49 @@ void STM_MotorSystem::controller_torque(){
 	return;
 }
 
+
+
 float STM_MotorSystem::get_velocity(){
 	int64_t buf;
 	float velocity;
 
 	buf = this->use_encoder.get_count() - before_encoder_cnt;
+	buf *=2*3.141592/ppr;
 	velocity = buf/0.001;
 
 	return velocity;
 }
+
+
 
 float STM_MotorSystem::get_current(){
 	this->current_ref = use_adc.ADC_get_current();
 	return current_ref;
 }
 
+
+
 void STM_MotorSystem::set_dir_pin(GPIO_TypeDef *GPIO_dir,uint16_t GPIO_PIN_dir){
 	this->GPIO_PIN_dir = GPIO_PIN_dir;
 	this->GPIO_dir = GPIO_dir;
 }
 
+
+
 void STM_MotorSystem::set_dir(GPIO_PinState dir){
 	HAL_GPIO_WritePin (this->GPIO_dir,this->GPIO_PIN_dir,dir);
+}
+
+
+void STM_MotorSystem::set_coast(){
+	this->MotorSystem_mode_buf = COAST_CONTROL;
+	this->STM_MotorSystem_start();
+
+}
+
+void STM_MotorSystem::set_coast_pin(GPIO_TypeDef *GPIO_coast,uint16_t GPIO_PIN_coast){
+	this->GPIO_PIN_coast = GPIO_PIN_coast;
+	this->GPIO_coast = GPIO_coast;
 }
 
 

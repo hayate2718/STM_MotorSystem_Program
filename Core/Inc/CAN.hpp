@@ -30,6 +30,7 @@ typedef enum{
 	SET_CURRENT_LIMIT = 0xf240,
 
 	SET_COAST = 0xf310,
+	SET_RESET = 0xf320,
 
 	GET_VELOCITY = 0xe010,
 	GET_VELOCITY_P = 0xe020,

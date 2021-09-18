@@ -8,24 +8,27 @@
 #include <ADC.hpp>
 
 ADC::ADC(ADC_HandleTypeDef *_hadc, float ADC_supply_voltage) :
-		ofset_current(0), current(0), ADC_supply_voltage(ADC_supply_voltage), _hadc(
-				_hadc) {
+		ofset_current(0),
+		current(0),
+		ADC_supply_voltage(ADC_supply_voltage),
+		_hadc(_hadc)
+{
 	_hadc->Init.Resolution = ADC_RESOLUTION_12B;
 	switch (_hadc->Init.Resolution) {
 	case ADC_RESOLUTION_12B:
-		ADC_resolution = 2 ^ 12;
+		ADC_resolution = 1<<12;
 		break;
 
 	case ADC_RESOLUTION_10B:
-		ADC_resolution = 2 ^ 10;
+		ADC_resolution = 1<<10;
 		break;
 
 	case ADC_RESOLUTION_8B:
-		ADC_resolution = 2 ^ 8;
+		ADC_resolution = 1<<8;
 		break;
 
 	case ADC_RESOLUTION_6B:
-		ADC_resolution = 2 ^ 6;
+		ADC_resolution = 1<<6;
 		break;
 	}
 
@@ -38,22 +41,22 @@ ADC::ADC(ADC_HandleTypeDef *_hadc, float ADC_supply_voltage) :
 }
 
 void ADC::ADC_calibration() {
-	HAL_ADC_Start(_hadc);
+	ADC_start();
 	_isr->bit2 = 1; //EOCbitクリア
 	for (int i = 0; i < 100; i++) {
-		while (!_isr->bit2)
-			; //EOCbitが再セットされるのをまつ
+		while (!_isr->bit2); //EOCbitが再セットされるのをまつ
 		calibration_current[i] = _hadc->Instance->DR;
 	}
 	for (int j = 0; j < 100; j++) {
 		ofset_current += calibration_current[j];
 	}
 	ofset_current /= 100;
-	HAL_ADC_Stop(_hadc);
+	//ADC_stop();
 }
 
 float ADC::ADC_get_current() { //電流センサ出力から現在の電流を計算して返す
 	float real_current;
+
 
 	_isr->bit2 = 1;
 	while (!_isr->bit2);

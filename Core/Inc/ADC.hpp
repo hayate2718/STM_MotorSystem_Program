@@ -76,9 +76,10 @@ public:
 		HAL_ADC_Start(_hadc);
 	}
 
-	void ADC_stop(){
+	/*void ADC_stop(){
 		HAL_ADC_Stop(_hadc);
-	}
+	}*/
+	//ADCをストップさせると復帰できない
 
 };
 
