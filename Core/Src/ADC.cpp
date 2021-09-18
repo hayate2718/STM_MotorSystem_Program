@@ -35,6 +35,9 @@ ADC::ADC(ADC_HandleTypeDef *_hadc, float ADC_supply_voltage) :
 	__IO uint32_t *_isr_buf = &_hadc->Instance->ISR;
 	_isr = (use_register*) _isr_buf;
 
+	__IO uint32_t *_cr_buf = &_hadc->Instance->CR;
+	_cr = (use_register*) _cr_buf;
+
 	calibration_current[100] = { 0 };
 
 	return;
@@ -51,7 +54,7 @@ void ADC::ADC_calibration() {
 		ofset_current += calibration_current[j];
 	}
 	ofset_current /= 100;
-	//ADC_stop();
+	ADC_stop();
 }
 
 float ADC::ADC_get_current() { //電流センサ出力から現在の電流を計算して返す
@@ -60,10 +63,23 @@ float ADC::ADC_get_current() { //電流センサ出力から現在の電流を�
 
 	_isr->bit2 = 1;
 	while (!_isr->bit2);
-
-	current = _hadc->Instance->DR - ofset_current;
+	current = _hadc->Instance->DR;
+	current -= ofset_current;
 	real_current = current * (ADC_supply_voltage / ADC_resolution);
 
 	return real_current;
 
+}
+
+void ADC::ADC_start(){
+	_cr->bit28 = 1;
+	HAL_ADC_Start(_hadc);
+	while(HAL_ADC_PollForConversion(_hadc,1));
+
+}
+
+void ADC::ADC_stop(){
+
+	HAL_ADC_Stop(_hadc);
+	_cr->bit1=1;
 }

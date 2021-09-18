@@ -13,7 +13,8 @@ CAN.cpp:12:1:USER_CAN::USER_CAN(CAN_HandleTypeDef*)	80	static
 CAN.cpp:41:6:void USER_CAN::use_tx_CAN(uint32_t, float)	40	static
 CAN.cpp:52:9:uint8_t USER_CAN::get_id_CAN()	24	static
 CAN.cpp:61:6:void USER_CAN::set_id_CAN(GPIO_TypeDef*, GPIO_TypeDef*, GPIO_TypeDef*, GPIO_TypeDef*, uint16_t, uint16_t, uint16_t, uint16_t)	24	static
-CAN.cpp:80:6:void USER_CAN::set_dlc_CAN(uint32_t)	16	static
-CAN.cpp:84:6:void USER_CAN::set_rtr_CAN(uint32_t)	16	static
-CAN.cpp:88:6:void USER_CAN::set_ide_CAN(uint32_t)	16	static
-CAN.cpp:92:6:void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef*)	72	static
+CAN.cpp:80:6:void USER_CAN::filter_set()	16	static
+CAN.cpp:86:6:void USER_CAN::set_dlc_CAN(uint32_t)	16	static
+CAN.cpp:90:6:void USER_CAN::set_rtr_CAN(uint32_t)	16	static
+CAN.cpp:94:6:void USER_CAN::set_ide_CAN(uint32_t)	16	static
+CAN.cpp:100:6:void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef*)	72	static

@@ -103,6 +103,8 @@ public :
 			uint16_t GPIO_PIN_idbit3
 			);
 
+	void filter_set();
+
 	void set_dlc_CAN(uint32_t dlc);
 
 	void set_rtr_CAN(uint32_t rtr);

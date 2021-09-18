@@ -19,10 +19,11 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include <STM_MotorSystem.hpp>
+
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <STM_MotorSystem.hpp>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/

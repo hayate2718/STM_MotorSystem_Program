@@ -62,6 +62,7 @@ private:
 	ADC_HandleTypeDef *_hadc;
 
 	use_register *_isr;
+	use_register *_cr;
 
 public:
 	ADC(ADC_HandleTypeDef *_hadc,float ADC_supply_voltage);
@@ -72,14 +73,9 @@ public:
 
 	float ADC_get_current();
 
-	void ADC_start(){
-		HAL_ADC_Start(_hadc);
-	}
+	void ADC_start();
 
-	/*void ADC_stop(){
-		HAL_ADC_Stop(_hadc);
-	}*/
-	//ADCをストップさせると復帰できない
+	void ADC_stop();//ADCをストップさせると復帰できるようになったが不安定
 
 };
 

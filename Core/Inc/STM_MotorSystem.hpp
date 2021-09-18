@@ -143,6 +143,12 @@ public:
 
 	void set_coast_pin(GPIO_TypeDef *GPIO_coast,uint16_t GPIO_PIN_coast);
 
+	void debug_func(){
+		STM_MotorSystem_init();
+		MotorSystem_mode_buf = 	VELOCITY_CONTROL;
+		STM_MotorSystem_start();
+	}
+
 	static STM_MotorSystem *_ms;
 
 

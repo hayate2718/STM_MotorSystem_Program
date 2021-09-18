@@ -24,7 +24,7 @@ USER_CAN::USER_CAN(CAN_HandleTypeDef * _use_hcan){
  	filter.FilterFIFOAssignment = 0; //rxdata to fifo0
 	filter.FilterMode = 0; //filter mode is mask mode
 	filter.FilterScale = 0; //filterscale is dual 16bits
-	filter.FilterIdHigh = get_id_CAN();
+	filter.FilterIdHigh = 0;
 	filter.FilterMaskIdHigh = 15;
 	HAL_CAN_ConfigFilter(this->_use_hcan, _filter);
 
@@ -77,6 +77,12 @@ void USER_CAN::set_id_CAN(GPIO_TypeDef * GPIO_idbit0,
 	this->GPIO_PIN_idbit3 = GPIO_PIN_idbit3;
 }
 
+void USER_CAN::filter_set(){
+	_filter->FilterIdHigh = this->get_id_CAN();
+	HAL_CAN_ConfigFilter(this->_use_hcan, _filter);
+
+}
+
 void USER_CAN::set_dlc_CAN(uint32_t dlc){
 	_TxHeader->DLC = dlc;
 }
@@ -88,6 +94,8 @@ void USER_CAN::set_rtr_CAN(uint32_t rtr){
 void USER_CAN::set_ide_CAN(uint32_t ide){
 	_TxHeader->IDE = ide;
 }
+
+#ifndef debug
 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan){ //受信割り込みコールバック
 	CAN_RxHeaderTypeDef RxHeader;
@@ -183,6 +191,6 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan){ //受信割り�
 
 		}
 }
-
+#endif
 
 

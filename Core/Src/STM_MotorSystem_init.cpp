@@ -42,6 +42,7 @@ use_adc(_hadc,3.3)
 
 	this->_control_timer = _control_timer;
 
+#ifndef debug
 	//can id set
 	use_can.GPIO_idbit0 = GPIOB;
 	use_can.GPIO_idbit1 = GPIOB;
@@ -51,10 +52,13 @@ use_adc(_hadc,3.3)
 	use_can.GPIO_PIN_idbit1 = GPIO_PIN_8;
 	use_can.GPIO_PIN_idbit2 = GPIO_PIN_9;
 	use_can.GPIO_PIN_idbit3 = GPIO_PIN_10;
+	use_can.filter_set();
 
 	//can通信有効化
 	HAL_CAN_Start(_hcan);
 	HAL_CAN_ActivateNotification(_hcan,CAN_IT_RX_FIFO0_MSG_PENDING);
+
+#endif
 
 	//pid dt set
 	pid_velocity.PID_set_dt(0.001);
@@ -109,7 +113,7 @@ void STM_MotorSystem::STM_MotorSystem_start(){
 		this->control_switch = 0;
 		HAL_TIM_Base_Stop_IT(_control_timer);
 		this->use_pwm.PWM_stop();
-		//this->use_adc.ADC_stop();
+		this->use_adc.ADC_stop();
 		break;
 
 	case COAST_CONTROL:
@@ -118,7 +122,7 @@ void STM_MotorSystem::STM_MotorSystem_start(){
 		HAL_TIM_Base_Stop_IT(_control_timer);
 		this->use_pwm.PWM_stop();
 		HAL_GPIO_WritePin(this->GPIO_coast,this->GPIO_PIN_coast,GPIO_PIN_SET);
-		//this->use_adc.ADC_stop();
+		this->use_adc.ADC_stop();
 		break;
 	}
 }
