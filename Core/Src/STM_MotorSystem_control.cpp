@@ -8,6 +8,14 @@
 #include <STM_MotorSystem.hpp>
 
 void STM_MotorSystem::motor_control(){
+	/*
+	 * defaultには本来ありえないパターンの処理をおいている。すなはち、例外発生であるためモータシステムが停止する処理に入る。
+	 * switch文でcontrol_switch変数を用いてタイマー割り込みの回数によって処理を変化させている。（10kHzで割り込みが入る）
+	 * 機能追加の際はMotorSystem_start()内に初期化文を書き、タイマー割り込み周期ごとの処理をここに書く。
+	 * 割り込み周期ごとの処理書く際、重複する処理はフォースルーで収束させる。
+	 * 制御周期を長期に変化させたい場合は各caseにbreakを記述し、特定のcaseに達したら処理を行わせcontrol_switchを初期化する。
+	 * 重複する処理や、制御周期を長期にしたい場合defaultに処理をおくか、breakさせるのがラクだが例外判定ができないため必ずdefaultには例外処理をおく(システム停止でなくてもよい)。
+	 */
 	control_switch++;
 	switch(this->MotorSystem_mode){
 	case VELOCITY_CONTROL:
@@ -16,16 +24,28 @@ void STM_MotorSystem::motor_control(){
 			this->controller_velocity();
 			this->controller_torque();
 			break;
+
 		case 2:
-			this->controller_torque();
-			break;
 		case 3:
+		case 4:
+		case 5:
+		case 6:
+		case 7:
+		case 8:
+		case 9:
 			this->controller_torque();
 			break;
-		case 4:
+
+		case 10:
 			this->controller_torque();
 			control_switch = 0;
 			break;
+
+		default :
+			this->MotorSystem_mode_buf = SYSTEM_STOP;
+			this->STM_MotorSystem_start();
+			break;
+
 		}}break;
 
 	case TORQUE_CONTROL:
@@ -33,23 +53,25 @@ void STM_MotorSystem::motor_control(){
 		{switch(control_switch){
 		case 1:
 			this->controller_torque();
-			break;
-		case 2:
-			this->controller_torque();
-			break;
-		case 3:
-			this->controller_torque();
-			break;
-		case 4:
-			this->controller_torque();
 			control_switch = 0;
 			break;
+
+		default:
+			this->MotorSystem_mode_buf = SYSTEM_STOP;
+			this->STM_MotorSystem_start();
+			break;
+
 		}}break;
 
+	case COAST_CONTROL:
+		this->MotorSystem_mode_buf = COAST_CONTROL;
+		this->STM_MotorSystem_start();
+		break;
 
 	default:
-		control_switch = 0;
-			break;
+		this->MotorSystem_mode_buf = SYSTEM_STOP;
+		this->STM_MotorSystem_start();
+		break;
 
 	}
 }
@@ -125,35 +147,9 @@ float STM_MotorSystem::get_velocity(){
 }
 
 
-
 float STM_MotorSystem::get_current(){
 	this->current_ref = use_adc.ADC_get_current();
 	return current_ref;
-}
-
-
-
-void STM_MotorSystem::set_dir_pin(GPIO_TypeDef *GPIO_dir,uint16_t GPIO_PIN_dir){
-	this->GPIO_PIN_dir = GPIO_PIN_dir;
-	this->GPIO_dir = GPIO_dir;
-}
-
-
-
-void STM_MotorSystem::set_dir(GPIO_PinState dir){
-	HAL_GPIO_WritePin (this->GPIO_dir,this->GPIO_PIN_dir,dir);
-}
-
-
-void STM_MotorSystem::set_coast(){
-	this->MotorSystem_mode_buf = COAST_CONTROL;
-	this->STM_MotorSystem_start();
-
-}
-
-void STM_MotorSystem::set_coast_pin(GPIO_TypeDef *GPIO_coast,uint16_t GPIO_PIN_coast){
-	this->GPIO_PIN_coast = GPIO_PIN_coast;
-	this->GPIO_coast = GPIO_coast;
 }
 
 

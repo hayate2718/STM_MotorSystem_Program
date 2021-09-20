@@ -11,6 +11,7 @@
 
 #include "main.h"
 
+
 #define _MAX_DLC 8
 
 typedef enum{
@@ -48,6 +49,7 @@ typedef enum{
 
 	SYSTEM_INIT = 0x1010,
 	SYSTEM_START = 0x1020,
+	MOTOR_SYSTEM_STOP = 0x1030,
 
 	ALERT_FF1 = 0x0010,
 	ALERT_FF2 = 0x0020,
@@ -90,6 +92,7 @@ public :
 	USER_CAN(CAN_HandleTypeDef * _use_hcan); //CAN通信のフィルタとかの設定
 
 	void use_tx_CAN(uint32_t cmd,float data); //CAN通信の送信関数
+	void use_rx_CAN(CAN_HandleTypeDef * _hcan); //CAN通信の受信関数
 
 	uint8_t get_id_CAN();
 
@@ -125,5 +128,16 @@ public :
 
 };
 
+inline void USER_CAN::set_dlc_CAN(uint32_t dlc){
+	_TxHeader->DLC = dlc;
+}
+
+inline void USER_CAN::set_rtr_CAN(uint32_t rtr){
+	_TxHeader->RTR = rtr;
+}
+
+inline void USER_CAN::set_ide_CAN(uint32_t ide){
+	_TxHeader->IDE = ide;
+}
 
 #endif /* INC_CAN_HPP_ */

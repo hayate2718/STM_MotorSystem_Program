@@ -59,6 +59,10 @@ private:
 
 	float ADC_supply_voltage;
 
+	float ADC_sens_gain; //[V/A]
+
+	float configrable_const_num;
+
 	ADC_HandleTypeDef *_hadc;
 
 	use_register *_isr;
@@ -69,17 +73,30 @@ public:
 
 	void ADC_calibration();
 
-	//void ADC_current_fillter(); デジタルフィルタについて学習後実装予定
+	//void ADC_current_fillter(); //デジタルフィルタについて学習後実装予定
 
 	float ADC_get_current();
 
 	void ADC_start();
 
-	void ADC_stop();//ADCをストップさせると復帰できるようになったが不安定
+	void ADC_stop();//ADCをストップさせても復帰できるようになったが不安定
+
+	void ADC_set_gain(float ADC_sens_gain){
+		this->ADC_sens_gain = ADC_sens_gain;
+	}
 
 };
 
+inline void ADC::ADC_start(){
+	_cr->bit28 = 1;
+	HAL_ADC_Start(_hadc);
+	while(HAL_ADC_PollForConversion(_hadc,1));
+}
 
+inline void ADC::ADC_stop(){
+	HAL_ADC_Stop(_hadc);
+	_cr->bit1=1;
+}
 
 
 #endif /* INC_ADC_HPP_ */

@@ -83,43 +83,31 @@ void USER_CAN::filter_set(){
 
 }
 
-void USER_CAN::set_dlc_CAN(uint32_t dlc){
-	_TxHeader->DLC = dlc;
-}
+void USER_CAN::use_rx_CAN(CAN_HandleTypeDef *_hcan){
+	if(_hcan != _use_hcan){
+		return;
+	}
 
-void USER_CAN::set_rtr_CAN(uint32_t rtr){
-	_TxHeader->RTR = rtr;
-}
-
-void USER_CAN::set_ide_CAN(uint32_t ide){
-	_TxHeader->IDE = ide;
-}
-
-#ifndef debug
-
-void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan){ //受信割り込みコールバック
+	STM_MotorSystem * ms = STM_MotorSystem::_ms;
 	CAN_RxHeaderTypeDef RxHeader;
 	can_data rx;
-	uint32_t cmd;
-	STM_MotorSystem *ms = STM_MotorSystem::_ms;
 
-	if(HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, rx.low_data_raw) == HAL_OK){
-		cmd = RxHeader.StdId & 0xfff0;
-		switch(cmd){
+	if(HAL_CAN_GetRxMessage(_use_hcan, CAN_RX_FIFO0, &RxHeader, rx.low_data_raw) == HAL_OK){
+		switch(RxHeader.StdId & 0xfff0){
 			case SET_VELOCITY:
 				ms->set_velocity(rx.low_data);
 				break;
 
 			case SET_VELOCITY_P:
-				ms->pid_velocity.PID_set_p(rx.low_data);
+				ms->set_velocity_p(rx.low_data);
 				break;
 
 			case SET_VELOCITY_I:
-				ms->pid_velocity.PID_set_i(rx.low_data);
+				ms->set_velocity_i(rx.low_data);
 				break;
 
 			case SET_VELOCITY_D:
-				ms->pid_velocity.PID_set_d(rx.low_data);
+				ms->set_velocity_d(rx.low_data);
 				break;
 
 			case SET_TORQUE:
@@ -127,15 +115,15 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan){ //受信割り�
 				break;
 
 			case SET_TORQUE_P:
-				ms->pid_torque.PID_set_p(rx.low_data);
+				ms->set_torque_p(rx.low_data);
 				break;
 
 			case SET_TORQUE_I:
-				ms->pid_torque.PID_set_i(rx.low_data);
+				ms->set_torque_i(rx.low_data);
 				break;
 
 			case SET_TORQUE_D:
-				ms->pid_torque.PID_set_d(rx.low_data);
+				ms->set_torque_d(rx.low_data);
 				break;
 
 			case SET_VOLTAGE:
@@ -190,6 +178,13 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan){ //受信割り�
 			}
 
 		}
+}
+
+#ifndef debug
+
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan){ //受信割り込みコールバック
+	STM_MotorSystem *ms = STM_MotorSystem::_ms;
+	ms->use_can.use_rx_CAN(hcan);
 }
 #endif
 

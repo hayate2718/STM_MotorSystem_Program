@@ -11,6 +11,8 @@ ADC::ADC(ADC_HandleTypeDef *_hadc, float ADC_supply_voltage) :
 		ofset_current(0),
 		current(0),
 		ADC_supply_voltage(ADC_supply_voltage),
+		ADC_sens_gain(0.33),
+		configrable_const_num(0),
 		_hadc(_hadc)
 {
 	_hadc->Init.Resolution = ADC_RESOLUTION_12B;
@@ -44,6 +46,7 @@ ADC::ADC(ADC_HandleTypeDef *_hadc, float ADC_supply_voltage) :
 }
 
 void ADC::ADC_calibration() {
+	configrable_const_num = ADC_supply_voltage / ADC_resolution / ADC_sens_gain;
 	ADC_start();
 	_isr->bit2 = 1; //EOCbitクリア
 	for (int i = 0; i < 100; i++) {
@@ -60,26 +63,11 @@ void ADC::ADC_calibration() {
 float ADC::ADC_get_current() { //電流センサ出力から現在の電流を計算して返す
 	float real_current;
 
-
 	_isr->bit2 = 1;
 	while (!_isr->bit2);
-	current = _hadc->Instance->DR;
-	current -= ofset_current;
-	real_current = current * (ADC_supply_voltage / ADC_resolution);
+	current = _hadc->Instance->DR - ofset_current;
+	real_current = current * configrable_const_num;
 
 	return real_current;
 
-}
-
-void ADC::ADC_start(){
-	_cr->bit28 = 1;
-	HAL_ADC_Start(_hadc);
-	while(HAL_ADC_PollForConversion(_hadc,1));
-
-}
-
-void ADC::ADC_stop(){
-
-	HAL_ADC_Stop(_hadc);
-	_cr->bit1=1;
 }

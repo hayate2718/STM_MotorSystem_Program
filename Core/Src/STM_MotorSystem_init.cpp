@@ -60,9 +60,17 @@ use_adc(_hadc,3.3)
 
 #endif
 
-	//pid dt set
+	//pid init
 	pid_velocity.PID_set_dt(0.001);
 	pid_torque.PID_set_dt(0.0001);
+
+	this->velocity_p_buf = 0;
+	this->velocity_i_buf = 0;
+	this->velocity_d_buf = 0;
+
+	this->torque_p_buf = 0;
+	this->torque_i_buf = 0;
+	this->torque_d_buf = 0;
 
 	//速度制御用エンコダバッファ初期化
 	before_encoder_cnt = use_encoder.get_ofset();
@@ -77,49 +85,73 @@ use_adc(_hadc,3.3)
 	//coast機能ピン設定
 	set_coast_pin(GPIOA,GPIO_PIN_7);
 
+	//電流センサゲインセット
+	this->use_adc.ADC_set_gain(0.11);
+
 }
 
 void STM_MotorSystem::STM_MotorSystem_init(){
-	HAL_TIM_Base_Stop_IT(_control_timer);
-	this->use_adc.ADC_calibration();
-	this->use_encoder.init_ENCODER();
-	this->use_pwm.PWM_stop();
-	HAL_GPIO_WritePin(this->GPIO_coast,this->GPIO_PIN_coast,GPIO_PIN_RESET);
-	this->MotorSystem_mode_buf = SYSTEM_STOP;
+	HAL_TIM_Base_Stop_IT(_control_timer); //割り込みタイマ停止
+	_control_timer->Instance->CNT = 0; //割り込みタイマカウント初期化
+	this->control_switch = 0;
+
+	this->use_adc.ADC_calibration(); //adcのキャリブレーション
+
+	this->use_encoder.init_ENCODER(); //エンコダカウント初期化
+
+	this->use_pwm.PWM_stop(); //PWMdutyを0にする
+
+	HAL_GPIO_WritePin(this->GPIO_coast,this->GPIO_PIN_coast,GPIO_PIN_RESET); //coast無効化
+
+	this->MotorSystem_mode_buf = SYSTEM_STOP; //システムをストップモードにセット
 }
 
-void STM_MotorSystem::STM_MotorSystem_start(){
+
+void STM_MotorSystem::STM_MotorSystem_start(){ //スタート毎にモードの初期化が行われる
+	HAL_TIM_Base_Stop_IT(_control_timer);
+	_control_timer->Instance->CNT = 0; //割り込みタイマカウント初期化
+	__HAL_TIM_CLEAR_FLAG(_control_timer, TIM_FLAG_UPDATE);
+	this->control_switch = 0;
 
 	HAL_GPIO_WritePin(this->GPIO_coast,this->GPIO_PIN_coast,GPIO_PIN_RESET);
-	__HAL_TIM_CLEAR_FLAG(_control_timer, TIM_FLAG_UPDATE);
 
 	switch(MotorSystem_mode_buf){
 	case VELOCITY_CONTROL:
 		this->MotorSystem_mode = VELOCITY_CONTROL;
-		this->control_switch = 0;
+
+		pid_velocity.PID_set_p(velocity_p_buf); //pid gain set
+		pid_velocity.PID_set_i(velocity_i_buf);
+		pid_velocity.PID_set_d(velocity_d_buf);
+
+		pid_torque.PID_set_p(torque_p_buf);
+		pid_torque.PID_set_i(torque_i_buf);
+		pid_torque.PID_set_d(torque_d_buf);
+
 		this->use_adc.ADC_start();
 		HAL_TIM_Base_Start_IT(_control_timer);
 		break;
 
 	case TORQUE_CONTROL:
 		this->MotorSystem_mode = TORQUE_CONTROL;
-		this->control_switch = 0;
+
+		pid_torque.PID_set_p(torque_p_buf);
+		pid_torque.PID_set_i(torque_i_buf);
+		pid_torque.PID_set_d(torque_d_buf);
+
+		this->velocity_tar = 0; //トルクコントロールモードでのフィードフォワード無効化
+
 		this->use_adc.ADC_start();
 		HAL_TIM_Base_Start_IT(_control_timer);
 		break;
 
 	case SYSTEM_STOP:
 		this->MotorSystem_mode = SYSTEM_STOP;
-		this->control_switch = 0;
-		HAL_TIM_Base_Stop_IT(_control_timer);
 		this->use_pwm.PWM_stop();
 		this->use_adc.ADC_stop();
 		break;
 
 	case COAST_CONTROL:
 		this->MotorSystem_mode = COAST_CONTROL;
-		this->control_switch = 0;
-		HAL_TIM_Base_Stop_IT(_control_timer);
 		this->use_pwm.PWM_stop();
 		HAL_GPIO_WritePin(this->GPIO_coast,this->GPIO_PIN_coast,GPIO_PIN_SET);
 		this->use_adc.ADC_stop();
