@@ -19,6 +19,9 @@ private:
 	float error; //偏差
 	float i_sum; //積分制御用偏差バッファ
 	float error_before; //前回偏差
+	float p_mv;
+	float i_mv;
+	float d_mv;
 
 public:
 	PID(float p,float i,float d,float dt);
@@ -33,7 +36,7 @@ public:
 };
 
 inline PID::PID(float p,float i,float d,float dt):
-		p(p),i(i),d(d),dt(dt),error(0),i_sum(0),error_before(0)
+		p(p),i(i),d(d),dt(dt),error(0),i_sum(0),error_before(0),p_mv(0),i_mv(0),d_mv(0)
 {
 	return;
 }
@@ -73,20 +76,16 @@ inline float PID::PID_get_d(){
 }
 
 inline float PID::PID_controller(float error){
-	this->error = error;
 	float MV = 0; //PIDコントローラ操作量
-	float p_mv = 0;
-	float i_mv = 0;
-	float d_mv = 0;
 
-	this->i_sum = (this->error+this->error_before)/2; //微小時間の間線形に動いていたとして
+	i_sum = i_sum + dt*(error+error_before)/2; //微小時間の間線形に動いていたとして
 
-	p_mv = this->p*this->error;
-	i_mv = this->i*i_sum*this->dt;
-	d_mv = this->d*(this->error-error_before)/dt;
+	p_mv = this->p*error;
+	i_mv = this->i*i_sum;
+	d_mv = this->d*(error-error_before)/dt;
 
 	MV = p_mv+i_mv+d_mv;
-	error_before = this->error;
+	error_before = error;
 
 	return MV;
 }

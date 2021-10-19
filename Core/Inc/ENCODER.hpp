@@ -27,6 +27,10 @@ public :
 
 };
 
+inline uint32_t ENCODER::get_count(){
+	ENCODER_count = _encoder_timer->Instance->CNT;
+	return ENCODER_count;
+}
 
 
 

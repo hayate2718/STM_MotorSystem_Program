@@ -33,11 +33,9 @@ void STM_MotorSystem::motor_control(){
 		case 7:
 		case 8:
 		case 9:
-			this->controller_torque();
 			break;
 
 		case 10:
-			this->controller_torque();
 			control_switch = 0;
 			break;
 
@@ -80,6 +78,7 @@ void STM_MotorSystem::motor_control(){
 
 
 void STM_MotorSystem::controller_velocity(){
+	this->velocity_ref = this->get_velocity();
 	float e_velocity;
 	this->velocity_tar = this->velocity_buf;
 
@@ -90,8 +89,6 @@ void STM_MotorSystem::controller_velocity(){
 				velocity_tar = -1*velocity_limit;
 			}
 		}
-
-	this->velocity_ref = this->get_velocity();
 
 	e_velocity = this->velocity_tar - this->velocity_ref;
 
@@ -113,21 +110,19 @@ void STM_MotorSystem::controller_velocity(){
 void STM_MotorSystem::controller_torque(){
 	float e_current;
 	float volt_tar;
-	GPIO_PinState dir_f;
 
 	e_current = this->get_current() - current_tar;
 
 	volt_tar = this->pid_torque.PID_controller(fabsf(e_current));
-	volt_tar += velocity_tar*kt+this->velocity_ref*kt; //フィードフォワードとフィードバックをたす
+	volt_tar = current_tar + velocity_tar*kt + this->velocity_ref*kt; //フィードフォワードとフィードバックをたす
+
+	if(volt_tar >= 0){ //モータの回転方向を決める
+			dir_f = GPIO_PIN_RESET;
+		}else{
+			dir_f = GPIO_PIN_SET;
+		}
 
 	this->use_pwm.PWM_out(fabsf(volt_tar));
-
-	if(e_current > 0){ //モータの回転方向を決める
-		dir_f = GPIO_PIN_SET;
-	}else{
-		dir_f = GPIO_PIN_RESET;
-	}
-
 	set_dir(dir_f);
 
 	return;
@@ -139,9 +134,14 @@ float STM_MotorSystem::get_velocity(){
 	int64_t buf;
 	float velocity;
 
-	buf = this->use_encoder.get_count() - before_encoder_cnt;
-	buf *=2*3.141592/ppr;
-	velocity = buf/0.001;
+	buf = this->use_encoder.get_count();
+	buf -= before_encoder_cnt;
+	before_encoder_cnt += buf;
+	velocity = buf;
+	velocity *=1570.796/ppr;
+
+	velocity = velocity*0.7+0.3*before_vel;
+	before_vel = velocity;
 
 	return velocity;
 }
@@ -154,6 +154,7 @@ float STM_MotorSystem::get_current(){
 
 
 void HAL_TIM_PeriodElapsedCallback (TIM_HandleTypeDef * htim){ //tim1割り込みコールバック
+
 	STM_MotorSystem * ms = STM_MotorSystem::_ms;
 	ms->motor_control();
 	return;

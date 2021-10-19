@@ -43,7 +43,7 @@ private:
 
 	float volt; //電源電圧
 
-	float kt; //トルク係数
+	float kt; //トルク係数 kv値[rpm/v]からだと 1/(rpm/v/60*2*3.141592)
 
 	float ppr; //エンコダの分解能
 
@@ -54,6 +54,8 @@ private:
 	float torque_p_buf;
 	float torque_i_buf;
 	float torque_d_buf;
+
+	float before_vel;
 
 	GPIO_TypeDef *GPIO_dir;
 	uint16_t GPIO_PIN_dir;
@@ -70,6 +72,8 @@ private:
 	uint32_t MotorSystem_mode;
 
 	TIM_HandleTypeDef *_control_timer;
+
+	GPIO_PinState dir_f;
 
 public:
 	STM_MotorSystem(ADC_HandleTypeDef *_hadc,

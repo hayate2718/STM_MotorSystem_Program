@@ -20,10 +20,6 @@ ENCODER::ENCODER(TIM_HandleTypeDef *_encoder_timer)
 	return;
 }
 
-uint32_t ENCODER::get_count(){
-	ENCODER_count = _encoder_timer->Instance->CNT;
-	return ENCODER_count;
-}
 
 uint32_t ENCODER::get_ofset(){
 	return this->ofset_count;

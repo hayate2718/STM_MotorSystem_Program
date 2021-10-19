@@ -10,6 +10,7 @@
 
 PWM::PWM(TIM_HandleTypeDef *_pwm_timer,uint32_t TIM_CHANNEL_n ){ //TIMxCHn n=1,2,3...
 	this->_pwm_timer = _pwm_timer;
+	this->supply_voltage = 12;
 
 	switch(TIM_CHANNEL_n){
 	case TIM_CHANNEL_1:

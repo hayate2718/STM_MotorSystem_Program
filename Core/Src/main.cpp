@@ -20,7 +20,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
-
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <STM_MotorSystem.hpp>
@@ -108,7 +107,17 @@ int main(void)
   MX_USART1_UART_Init();
   MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
-  STM_MotorSystem use_ms(&hadc2,&hcan,&htim2,&htim3,TIM_CHANNEL_2,&htim1);
+  STM_MotorSystem use_ms(&hadc2,&hcan,&htim2,&htim3,TIM_CHANNEL_3,&htim1);
+  use_ms.STM_MotorSystem_init();
+  //use_ms.set_torque_p(0.7);
+   //use_ms.set_torque_i(3);
+   use_ms.set_kt(7.2*60/221/2/3.141592);
+   use_ms.set_ppr(2048);
+   use_ms.set_velocity_p(0.3);
+   use_ms.set_velocity_i(10);
+   use_ms.set_velocity(0.2*3.14);
+   //use_ms.set_torque(1);
+   use_ms.STM_MotorSystem_start();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -281,10 +290,10 @@ static void MX_TIM1_Init(void)
 
   /* USER CODE END TIM1_Init 1 */
   htim1.Instance = TIM1;
-  htim1.Init.Prescaler = 0;
+  htim1.Init.Prescaler = 1;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim1.Init.Period = 3600;
-  htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV2;
+  htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim1.Init.RepetitionCounter = 0;
   htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   if (HAL_TIM_Base_Init(&htim1) != HAL_OK)

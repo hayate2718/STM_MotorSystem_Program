@@ -21,11 +21,13 @@ velocity_tar(0),
 current_ref(0),
 current_tar(0),
 
-volt(0),
+volt(12),
 
 kt(0),
 
 ppr(0),
+
+before_vel(0),
 
 control_switch(0),
 
@@ -86,7 +88,8 @@ use_adc(_hadc,3.3)
 	set_coast_pin(GPIOA,GPIO_PIN_7);
 
 	//電流センサゲインセット
-	this->use_adc.ADC_set_gain(0.11);
+	this->use_adc.ADC_set_gain(0.025);
+
 
 }
 
