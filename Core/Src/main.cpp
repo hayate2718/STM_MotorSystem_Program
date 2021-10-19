@@ -85,7 +85,8 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+
+	HAL_Init();
 
   /* USER CODE BEGIN Init */
 
@@ -108,18 +109,19 @@ int main(void)
   MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
   STM_MotorSystem use_ms(&hadc2,&hcan,&htim2,&htim3,TIM_CHANNEL_3,&htim1);
-  /*
+/*
   use_ms.STM_MotorSystem_init();
   use_ms.set_torque_p(0.3);
-   use_ms.set_torque_i(10);
+   use_ms.set_torque_i(100);
    use_ms.set_kt(7.2*60/221/2/3.141592);
    use_ms.set_ppr(2048);
    use_ms.set_velocity_p(3.3);
-   use_ms.set_velocity_i(10);
+   use_ms.set_velocity_i(100);
    use_ms.set_velocity_d(0.00003);
    use_ms.set_velocity(0.2*3.14);
    //use_ms.set_torque(-0.1);
-   use_ms.STM_MotorSystem_start();*/
+   use_ms.STM_MotorSystem_start();
+   */
   /* USER CODE END 2 */
 
   /* Infinite loop */

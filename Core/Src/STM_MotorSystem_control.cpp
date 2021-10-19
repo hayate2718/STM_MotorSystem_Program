@@ -33,9 +33,11 @@ void STM_MotorSystem::motor_control(){
 		case 7:
 		case 8:
 		case 9:
+			this->controller_torque();
 			break;
 
 		case 10:
+			this->controller_torque();
 			control_switch = 0;
 			break;
 
