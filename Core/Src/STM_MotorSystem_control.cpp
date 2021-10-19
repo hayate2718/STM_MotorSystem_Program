@@ -94,14 +94,6 @@ void STM_MotorSystem::controller_velocity(){
 
 	current_tar = this->pid_velocity.PID_controller(e_velocity);
 
-	if(fabsf(current_tar) > current_limit){
-			if(current_tar > 0){
-				current_tar = current_limit;
-			}else{
-				current_tar = -1*current_limit;
-			}
-		}
-
 	return;
 }
 
@@ -111,10 +103,18 @@ void STM_MotorSystem::controller_torque(){
 	float e_current;
 	float volt_tar;
 
-	e_current = this->get_current() - current_tar;
+	if(fabsf(current_tar) > current_limit){
+				if(current_tar > 0){
+					current_tar = current_limit;
+				}else{
+					current_tar = -1*current_limit;
+				}
+			}
 
-	volt_tar = this->pid_torque.PID_controller(fabsf(e_current));
-	volt_tar = current_tar + velocity_tar*kt + this->velocity_ref*kt; //フィードフォワードとフィードバックをたす
+	e_current = current_tar - this->get_current();
+
+	volt_tar = this->pid_torque.PID_controller(e_current);
+	volt_tar += velocity_tar*kt + this->velocity_ref*kt; //フィードフォワードとフィードバックをたす
 
 	if(volt_tar >= 0){ //モータの回転方向を決める
 			dir_f = GPIO_PIN_RESET;

@@ -65,6 +65,8 @@ private:
 
 	ADC_HandleTypeDef *_hadc;
 
+	float before_current;
+
 	use_register *_isr;
 	use_register *_cr;
 
@@ -73,7 +75,7 @@ public:
 
 	void ADC_calibration();
 
-	//void ADC_current_fillter(); //デジタルフィルタについて学習後実装予定
+	void ADC_current_fillter(); //デジタルフィルタについて学習後実装予定
 
 	float ADC_get_current();
 

@@ -13,7 +13,8 @@ ADC::ADC(ADC_HandleTypeDef *_hadc, float ADC_supply_voltage) :
 		ADC_supply_voltage(ADC_supply_voltage),
 		ADC_sens_gain(0.33),
 		configrable_const_num(0),
-		_hadc(_hadc)
+		_hadc(_hadc),
+        before_current(0)
 {
 	_hadc->Init.Resolution = ADC_RESOLUTION_12B;
 	switch (_hadc->Init.Resolution) {
@@ -58,16 +59,24 @@ void ADC::ADC_calibration() {
 	}
 	ofset_current /= 100;
 	ADC_stop();
+	before_current = ofset_current * configrable_const_num;
 }
 
 float ADC::ADC_get_current() { //電流センサ出力から現在の電流を計算して返す
-	float real_current;
 
 	_isr->bit2 = 1;
 	while (!_isr->bit2);
 	current = _hadc->Instance->DR - ofset_current;
-	real_current = current * configrable_const_num;
+	current = current * configrable_const_num;
 
-	return real_current;
+	//ADC_current_fillter();
+
+	return current;
 
 }
+
+
+ void ADC::ADC_current_fillter(){
+	 current = current*0.8+0.2*before_current;
+	 before_current = current;
+ }
