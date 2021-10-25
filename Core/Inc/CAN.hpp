@@ -23,7 +23,7 @@ typedef enum{
 	SET_TORQUE = 0x750,
 	SET_TORQUE_P = 0x760,
 	SET_TORQUE_I = 0x770,
-	SET_TORQUE_D = 0xf80,
+	SET_TORQUE_D = 0x780,
 
 	SET_VOLTAGE =0x610, //電源電圧
 	SET_PPR = 0x620, //エンコダ分解能

@@ -2007,9 +2007,9 @@ void USER_CAN::use_rx_CAN(CAN_HandleTypeDef *_hcan){
  8001374:	693a      	ldr	r2, [r7, #16]
  8001376:	f64f 73f0 	movw	r3, #65520	; 0xfff0
  800137a:	4013      	ands	r3, r2
- 800137c:	f5b3 6f78 	cmp.w	r3, #3968	; 0xf80
+ 800137c:	f5b3 6ff0 	cmp.w	r3, #1920	; 0x780
  8001380:	f000 80f8 	beq.w	8001574 <_ZN8USER_CAN10use_rx_CANEP19__CAN_HandleTypeDef+0x240>
- 8001384:	f5b3 6f78 	cmp.w	r3, #3968	; 0xf80
+ 8001384:	f5b3 6ff0 	cmp.w	r3, #1920	; 0x780
  8001388:	f200 8166 	bhi.w	8001658 <_ZN8USER_CAN10use_rx_CANEP19__CAN_HandleTypeDef+0x324>
  800138c:	f5b3 6fee 	cmp.w	r3, #1904	; 0x770
  8001390:	f000 80e8 	beq.w	8001564 <_ZN8USER_CAN10use_rx_CANEP19__CAN_HandleTypeDef+0x230>
