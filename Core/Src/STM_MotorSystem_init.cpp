@@ -150,6 +150,7 @@ void STM_MotorSystem::STM_MotorSystem_start(){ //スタート毎にモードの�
 		pid_torque.PID_set_d(torque_d_buf);
 
 		this->velocity_tar = 0; //トルクコントロールモードでのフィードフォワード無効化
+		this->velocity_ref = 0;
 
 		this->use_adc.ADC_start();
 		HAL_TIM_Base_Start_IT(_control_timer);
