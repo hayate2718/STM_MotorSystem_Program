@@ -67,6 +67,8 @@ private:
 
 	float before_current;
 
+	uint8_t ADC_f;
+
 	use_register *_isr;
 	use_register *_cr;
 
@@ -85,19 +87,24 @@ public:
 
 	void ADC_set_gain(float ADC_sens_gain){
 		this->ADC_sens_gain = ADC_sens_gain;
+		configrable_const_num = ADC_supply_voltage / ADC_resolution / this->ADC_sens_gain;
 	}
 
 };
 
 inline void ADC::ADC_start(){
+	if(ADC_f)return;
 	_cr->bit28 = 1;
 	HAL_ADC_Start(_hadc);
 	while(HAL_ADC_PollForConversion(_hadc,1));
+	ADC_f = 1;
 }
 
 inline void ADC::ADC_stop(){
+	if(!ADC_f)return;
 	HAL_ADC_Stop(_hadc);
 	_cr->bit1=1;
+	ADC_f = 0;
 }
 
 

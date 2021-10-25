@@ -15,45 +15,46 @@
 #define _MAX_DLC 8
 
 typedef enum{
-	SET_VELOCITY = 0xf010,
-	SET_VELOCITY_P = 0xf020,
-	SET_VELOCITY_I = 0xf030,
-	SET_VELOCITY_D = 0xf040,
+	SET_VELOCITY = 0x710,
+	SET_VELOCITY_P = 0x720,
+	SET_VELOCITY_I = 0x730,
+	SET_VELOCITY_D = 0x740,
 
-	SET_TORQUE = 0xf110,
-	SET_TORQUE_P = 0xf120,
-	SET_TORQUE_I = 0xf130,
-	SET_TORQUE_D = 0xf140,
+	SET_TORQUE = 0x750,
+	SET_TORQUE_P = 0x760,
+	SET_TORQUE_I = 0x770,
+	SET_TORQUE_D = 0xf80,
 
-	SET_VOLTAGE =0xf210, //電源電圧
-	SET_PPR = 0xf220, //エンコダ分解能
-	SET_KT = 0xf230, //モタトルク係数
-	SET_CURRENT_LIMIT = 0xf240,
+	SET_VOLTAGE =0x610, //電源電圧
+	SET_PPR = 0x620, //エンコダ分解能
+	SET_KT = 0x630, //モタトルク係数
+	SET_CURRENT_LIMIT = 0x640, //電流制限（ストール電流以上に設定すると積分が死ぬ）
+	SET_ADC_GAIN = 0x650, //電流センサのゲイン設定
 
-	SET_COAST = 0xf310,
-	SET_RESET = 0xf320,
+	SET_COAST = 0x510,
+	SET_RESET = 0x520, //追加予定
 
-	GET_VELOCITY = 0xe010,
-	GET_VELOCITY_P = 0xe020,
-	GET_VELOCITY_I = 0xe030,
-	GET_VELOCITY_D = 0xe040,
+	GET_VELOCITY = 0x410,
+	GET_VELOCITY_P = 0x420, //追加予定
+	GET_VELOCITY_I = 0x430, //追加予定
+	GET_VELOCITY_D = 0x440, //追加予定
 
-	GET_TORQUE_P = 0xe110,
-	GET_TORQUE_I = 0xe120,
-	GET_TORQUE_D = 0xe130,
+	GET_TORQUE_P = 0x450, //追加予定
+	GET_TORQUE_I = 0x460, //追加予定
+	GET_TORQUE_D = 0x470, //追加予定
 
-	GET_CURRENT = 0xe210,
+	GET_CURRENT = 0x480,
 
-	GET_FF1_STATE = 0xe310,
-	GET_FF2_STATE = 0xe320,
+	GET_FF1_STATE = 0x310, //追加予定
+	GET_FF2_STATE = 0x320, //追加予定
 
-	SYSTEM_INIT = 0x1010,
-	SYSTEM_START = 0x1020,
-	MOTOR_SYSTEM_STOP = 0x1030,
+	SYSTEM_INIT = 0x010,
+	SYSTEM_START = 0x020,
+	MOTOR_SYSTEM_STOP = 0x030,
 
-	ALERT_FF1 = 0x0010,
-	ALERT_FF2 = 0x0020,
-	ALERT_FF1_FF2 = 0x0030,
+	ALERT_FF1 = 0x040, //追加予定
+	ALERT_FF2 = 0x050, //追加予定
+	ALERT_FF1_FF2 = 0x060, //追加予定
 
 }cmd;
 
@@ -83,8 +84,8 @@ typedef union{
 
 class USER_CAN{
 private :
-	CAN_FilterTypeDef * _filter;
-	CAN_TxHeaderTypeDef * _TxHeader;
+	CAN_FilterTypeDef filter;
+	CAN_TxHeaderTypeDef TxHeader;
 	CAN_HandleTypeDef * _use_hcan;
 
 
@@ -129,15 +130,15 @@ public :
 };
 
 inline void USER_CAN::set_dlc_CAN(uint32_t dlc){
-	_TxHeader->DLC = dlc;
+	TxHeader.DLC = dlc;
 }
 
 inline void USER_CAN::set_rtr_CAN(uint32_t rtr){
-	_TxHeader->RTR = rtr;
+	TxHeader.RTR = rtr;
 }
 
 inline void USER_CAN::set_ide_CAN(uint32_t ide){
-	_TxHeader->IDE = ide;
+	TxHeader.IDE = ide;
 }
 
 #endif /* INC_CAN_HPP_ */

@@ -14,7 +14,8 @@ ADC::ADC(ADC_HandleTypeDef *_hadc, float ADC_supply_voltage) :
 		ADC_sens_gain(0.33),
 		configrable_const_num(0),
 		_hadc(_hadc),
-        before_current(0)
+        before_current(0),
+		ADC_f(0)
 {
 	_hadc->Init.Resolution = ADC_RESOLUTION_12B;
 	switch (_hadc->Init.Resolution) {
@@ -48,6 +49,7 @@ ADC::ADC(ADC_HandleTypeDef *_hadc, float ADC_supply_voltage) :
 
 void ADC::ADC_calibration() {
 	configrable_const_num = ADC_supply_voltage / ADC_resolution / ADC_sens_gain;
+	ofset_current = 0;
 	ADC_start();
 	_isr->bit2 = 1; //EOCbitクリア
 	for (int i = 0; i < 100; i++) {

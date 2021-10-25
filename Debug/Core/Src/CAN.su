@@ -1,3 +1,4 @@
+ADC.hpp:88:7:void ADC::ADC_set_gain(float)	16	static
 STM_MotorSystem.hpp:93:7:void STM_MotorSystem::set_velocity(float)	16	static
 STM_MotorSystem.hpp:98:7:void STM_MotorSystem::set_torque(float)	16	static
 STM_MotorSystem.hpp:104:8:float STM_MotorSystem::com_get_velocity()	16	static
@@ -12,10 +13,12 @@ STM_MotorSystem.hpp:178:7:void STM_MotorSystem::set_velocity_d(float)	16	static
 STM_MotorSystem.hpp:182:7:void STM_MotorSystem::set_torque_p(float)	16	static
 STM_MotorSystem.hpp:186:7:void STM_MotorSystem::set_torque_i(float)	16	static
 STM_MotorSystem.hpp:190:7:void STM_MotorSystem::set_torque_d(float)	16	static
-CAN.cpp:12:1:USER_CAN::USER_CAN(CAN_HandleTypeDef*)	80	static
-CAN.cpp:41:6:void USER_CAN::use_tx_CAN(uint32_t, float)	40	static
-CAN.cpp:52:9:uint8_t USER_CAN::get_id_CAN()	24	static
-CAN.cpp:61:6:void USER_CAN::set_id_CAN(GPIO_TypeDef*, GPIO_TypeDef*, GPIO_TypeDef*, GPIO_TypeDef*, uint16_t, uint16_t, uint16_t, uint16_t)	24	static
-CAN.cpp:80:6:void USER_CAN::filter_set()	16	static
-CAN.cpp:86:6:void USER_CAN::use_rx_CAN(CAN_HandleTypeDef*)	64	static
-CAN.cpp:185:6:void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef*)	24	static
+STM_MotorSystem.hpp:244:14:void STM_MotorSystem::set_coast()	16	static
+STM_MotorSystem.hpp:249:13:void STM_MotorSystem::STM_MotorSystem_stop()	16	static
+CAN.cpp:12:1:USER_CAN::USER_CAN(CAN_HandleTypeDef*)	16	static
+CAN.cpp:33:6:void USER_CAN::use_tx_CAN(uint32_t, float)	40	static
+CAN.cpp:45:9:uint8_t USER_CAN::get_id_CAN()	24	static
+CAN.cpp:54:6:void USER_CAN::set_id_CAN(GPIO_TypeDef*, GPIO_TypeDef*, GPIO_TypeDef*, GPIO_TypeDef*, uint16_t, uint16_t, uint16_t, uint16_t)	24	static
+CAN.cpp:73:6:void USER_CAN::filter_set()	16	static
+CAN.cpp:83:6:void USER_CAN::use_rx_CAN(CAN_HandleTypeDef*)	64	static
+CAN.cpp:196:6:void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef*)	24	static

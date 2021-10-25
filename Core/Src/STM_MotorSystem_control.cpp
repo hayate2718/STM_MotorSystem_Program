@@ -64,13 +64,16 @@ void STM_MotorSystem::motor_control(){
 		}}break;
 
 	case COAST_CONTROL:
-		this->MotorSystem_mode_buf = COAST_CONTROL;
-		this->STM_MotorSystem_start();
+		HAL_TIM_Base_Stop_IT(_control_timer);
+		this->use_pwm.PWM_stop();
+		HAL_GPIO_WritePin(this->GPIO_coast,this->GPIO_PIN_coast,GPIO_PIN_SET);
+		this->use_adc.ADC_stop();
 		break;
 
 	default:
-		this->MotorSystem_mode_buf = SYSTEM_STOP;
-		this->STM_MotorSystem_start();
+		HAL_TIM_Base_Stop_IT(_control_timer);
+		this->use_pwm.PWM_stop();
+		this->use_adc.ADC_stop();
 		break;
 
 	}

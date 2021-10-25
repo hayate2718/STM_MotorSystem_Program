@@ -102,7 +102,7 @@ public:
 	}
 
 	float com_get_velocity(){//通信系に現在の速度を返す
-		return this->velocity_buf;
+		return this->velocity_ref;
 	}
 
 	float get_velocity(); //エンコダ出力から現在の速度を計算して返す
@@ -196,6 +196,21 @@ public:
 		STM_MotorSystem_init();
 		MotorSystem_mode_buf = 	VELOCITY_CONTROL;
 		STM_MotorSystem_start();
+	}
+
+	void debug_func2(){
+		  STM_MotorSystem_init();
+		  set_torque_p(0.3);
+		  set_torque_i(100);
+		  set_torque_d(0);
+		  set_kt(7.2*60/221/2/3.141592);
+		  set_ppr(2048);
+		  set_velocity_p(3.3);
+		  set_velocity_i(100);
+		  set_velocity_d(0.00003);
+		  //set_velocity(0.2*3.14);
+		  //set_torque(-0.1);
+		  STM_MotorSystem_start();
 	}
 
 	static STM_MotorSystem *_ms;

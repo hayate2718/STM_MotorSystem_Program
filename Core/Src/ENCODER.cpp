@@ -32,7 +32,6 @@ void ENCODER::init_ENCODER(){
 	uint32_t arr;
 	arr = this->_encoder_timer->Instance->ARR; //timerカウントの最大値
 	this->_encoder_timer->Instance->CNT = arr/2;
-	ENCODER_count = arr/2;
 
 	HAL_TIM_Encoder_Start(this->_encoder_timer,TIM_CHANNEL_ALL);
 }

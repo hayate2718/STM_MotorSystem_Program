@@ -44,7 +44,7 @@ use_adc(_hadc,3.3)
 
 	this->_control_timer = _control_timer;
 
-#ifndef debug
+
 	//can id set
 	use_can.GPIO_idbit0 = GPIOB;
 	use_can.GPIO_idbit1 = GPIOB;
@@ -54,13 +54,13 @@ use_adc(_hadc,3.3)
 	use_can.GPIO_PIN_idbit1 = GPIO_PIN_8;
 	use_can.GPIO_PIN_idbit2 = GPIO_PIN_9;
 	use_can.GPIO_PIN_idbit3 = GPIO_PIN_10;
+
 	use_can.filter_set();
 
 	//can通信有効化
 	HAL_CAN_Start(_hcan);
 	HAL_CAN_ActivateNotification(_hcan,CAN_IT_RX_FIFO0_MSG_PENDING);
 
-#endif
 
 	//pid init
 	pid_velocity.PID_set_dt(0.001);
@@ -94,19 +94,19 @@ use_adc(_hadc,3.3)
 }
 
 void STM_MotorSystem::STM_MotorSystem_init(){
-	HAL_TIM_Base_Stop_IT(_control_timer); //割り込みタイマ停止
-	_control_timer->Instance->CNT = 0; //割り込みタイマカウント初期化
-	this->control_switch = 0;
-
-	this->use_adc.ADC_calibration(); //adcのキャリブレーション
-
-	this->use_encoder.init_ENCODER(); //エンコダカウント初期化
 
 	this->use_pwm.PWM_stop(); //PWMdutyを0にする
 
+	this->use_encoder.init_ENCODER(); //エンコダカウント初期化
+
 	HAL_GPIO_WritePin(this->GPIO_coast,this->GPIO_PIN_coast,GPIO_PIN_RESET); //coast無効化
 
+
+	this->use_adc.ADC_calibration(); //adcのキャリブレーション
+
 	this->MotorSystem_mode_buf = SYSTEM_STOP; //システムをストップモードにセット
+
+	this->use_can.use_tx_CAN(SYSTEM_INIT, 0);
 }
 
 
@@ -118,9 +118,17 @@ void STM_MotorSystem::STM_MotorSystem_start(){ //スタート毎にモードの�
 
 	HAL_GPIO_WritePin(this->GPIO_coast,this->GPIO_PIN_coast,GPIO_PIN_RESET);
 
+	pid_velocity.PID_reset();
+	pid_torque.PID_reset();
+
 	switch(MotorSystem_mode_buf){
 	case VELOCITY_CONTROL:
 		this->MotorSystem_mode = VELOCITY_CONTROL;
+
+		before_vel = 0;
+
+		this->use_encoder.init_ENCODER(); //エンコダカウント初期化
+		before_encoder_cnt = this->use_encoder.get_ofset();
 
 		pid_velocity.PID_set_p(velocity_p_buf); //pid gain set
 		pid_velocity.PID_set_i(velocity_i_buf);
@@ -151,6 +159,7 @@ void STM_MotorSystem::STM_MotorSystem_start(){ //スタート毎にモードの�
 		this->MotorSystem_mode = SYSTEM_STOP;
 		this->use_pwm.PWM_stop();
 		this->use_adc.ADC_stop();
+		HAL_TIM_Base_Start_IT(_control_timer);
 		break;
 
 	case COAST_CONTROL:
@@ -158,6 +167,7 @@ void STM_MotorSystem::STM_MotorSystem_start(){ //スタート毎にモードの�
 		this->use_pwm.PWM_stop();
 		HAL_GPIO_WritePin(this->GPIO_coast,this->GPIO_PIN_coast,GPIO_PIN_SET);
 		this->use_adc.ADC_stop();
+		HAL_TIM_Base_Start_IT(_control_timer);
 		break;
 	}
 }

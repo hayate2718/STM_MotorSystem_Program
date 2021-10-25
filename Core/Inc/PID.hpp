@@ -33,6 +33,7 @@ public:
 	float PID_get_i();
 	float PID_get_d();
 	float PID_controller(float error);
+	void PID_reset();
 };
 
 inline PID::PID(float p,float i,float d,float dt):
@@ -88,6 +89,11 @@ inline float PID::PID_controller(float error){
 	error_before = error;
 
 	return MV;
+}
+
+inline void PID::PID_reset(){
+	i_sum = 0;
+	error_before = 0;
 }
 
 #endif /* INC_PID_HPP_ */

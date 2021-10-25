@@ -85,8 +85,7 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-
-	HAL_Init();
+  HAL_Init();
 
   /* USER CODE BEGIN Init */
 
@@ -109,19 +108,6 @@ int main(void)
   MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
   STM_MotorSystem use_ms(&hadc2,&hcan,&htim2,&htim3,TIM_CHANNEL_3,&htim1);
-/*
-  use_ms.STM_MotorSystem_init();
-  use_ms.set_torque_p(0.3);
-   use_ms.set_torque_i(100);
-   use_ms.set_kt(7.2*60/221/2/3.141592);
-   use_ms.set_ppr(2048);
-   use_ms.set_velocity_p(3.3);
-   use_ms.set_velocity_i(100);
-   use_ms.set_velocity_d(0.00003);
-   use_ms.set_velocity(0.2*3.14);
-   //use_ms.set_torque(-0.1);
-   use_ms.STM_MotorSystem_start();
-   */
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -254,11 +240,11 @@ static void MX_CAN_Init(void)
 
   /* USER CODE END CAN_Init 1 */
   hcan.Instance = CAN;
-  hcan.Init.Prescaler = 4;
+  hcan.Init.Prescaler = 3;
   hcan.Init.Mode = CAN_MODE_NORMAL;
   hcan.Init.SyncJumpWidth = CAN_SJW_1TQ;
-  hcan.Init.TimeSeg1 = CAN_BS1_5TQ;
-  hcan.Init.TimeSeg2 = CAN_BS2_3TQ;
+  hcan.Init.TimeSeg1 = CAN_BS1_6TQ;
+  hcan.Init.TimeSeg2 = CAN_BS2_5TQ;
   hcan.Init.TimeTriggeredMode = DISABLE;
   hcan.Init.AutoBusOff = ENABLE;
   hcan.Init.AutoWakeUp = ENABLE;
@@ -294,7 +280,7 @@ static void MX_TIM1_Init(void)
 
   /* USER CODE END TIM1_Init 1 */
   htim1.Instance = TIM1;
-  htim1.Init.Prescaler = 1;
+  htim1.Init.Prescaler = 2;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim1.Init.Period = 3600;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
