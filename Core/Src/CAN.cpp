@@ -123,6 +123,22 @@ void USER_CAN::use_rx_CAN(CAN_HandleTypeDef *_hcan){
 				ms->set_torque_d(rx.low_data);
 				break;
 
+			case SET_ANGLE:
+				ms->set_angle(rx.low_data);
+				break;
+
+			case SET_ANGLE_P:
+				ms->set_angle_p(rx.low_data);
+				break;
+
+			case SET_ANGLE_I:
+				ms->set_angle_i(rx.low_data);
+				break;
+
+			case SET_ANGLE_D:
+				ms->set_angle_d(rx.low_data);
+				break;
+
 			case SET_VOLTAGE:
 				ms->set_volt(rx.low_data);
 				break;
@@ -174,6 +190,19 @@ void USER_CAN::use_rx_CAN(CAN_HandleTypeDef *_hcan){
 
 			case GET_CURRENT:
 				ms->use_can.use_tx_CAN(GET_CURRENT,ms->com_get_current());
+				break;
+
+			case GET_SUM_ANGLE:
+				ms->use_can.use_tx_CAN(GET_SUM_ANGLE,ms->com_get_sum_angle());
+				break;
+
+			case GET_ANGLE_P:
+				break;
+
+			case GET_ANGLE_I:
+				break;
+
+			case GET_ANGLE_D:
 				break;
 
 			case SYSTEM_INIT:

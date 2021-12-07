@@ -21,6 +21,9 @@ velocity_tar(0),
 current_ref(0),
 current_tar(0),
 
+angle_ref(0),
+angle_tar(0),
+
 volt(12),
 
 kt(0),
@@ -31,8 +34,11 @@ before_vel(0),
 
 control_switch(0),
 
+init_f(0),
+
 pid_velocity(0,0,0,0.0001),
 pid_torque(0,0,0,0.0001),
+pid_angle(0,0,0,0.001),
 use_can(_hcan),
 use_pwm(_pwm_timer,TIM_CHANNEL_n),
 use_encoder(_encoder_timer),
@@ -95,14 +101,18 @@ use_adc(_hadc,3.3)
 
 void STM_MotorSystem::STM_MotorSystem_init(){
 
-	this->use_pwm.PWM_stop(); //PWMdutyを0にする
+	if(!init_f){
 
-	this->use_encoder.init_ENCODER(); //エンコダカウント初期化
+		this->use_pwm.PWM_stop(); //PWMdutyを0にする
 
-	HAL_GPIO_WritePin(this->GPIO_coast,this->GPIO_PIN_coast,GPIO_PIN_RESET); //coast無効化
+		this->use_encoder.init_ENCODER(); //エンコダカウント初期化
 
+		HAL_GPIO_WritePin(this->GPIO_coast,this->GPIO_PIN_coast,GPIO_PIN_RESET); //coast無効化
 
-	this->use_adc.ADC_calibration(); //adcのキャリブレーション
+		this->use_adc.ADC_calibration(); //adcのキャリブレーション
+
+		init_f = 1;
+	}
 
 	this->MotorSystem_mode_buf = SYSTEM_STOP; //システムをストップモードにセット
 
@@ -116,7 +126,7 @@ void STM_MotorSystem::STM_MotorSystem_start(){ //スタート毎にモードの�
 	__HAL_TIM_CLEAR_FLAG(_control_timer, TIM_FLAG_UPDATE);
 	this->control_switch = 0;
 
-	HAL_GPIO_WritePin(this->GPIO_coast,this->GPIO_PIN_coast,GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(this->GPIO_coast,this->GPIO_PIN_coast,GPIO_PIN_RESET); //coast無効化
 
 	pid_velocity.PID_reset();
 	pid_torque.PID_reset();
@@ -127,8 +137,7 @@ void STM_MotorSystem::STM_MotorSystem_start(){ //スタート毎にモードの�
 
 		before_vel = 0;
 
-		this->use_encoder.init_ENCODER(); //エンコダカウント初期化
-		before_encoder_cnt = this->use_encoder.get_ofset();
+		before_encoder_cnt = this->use_encoder.get_count();
 
 		pid_velocity.PID_set_p(velocity_p_buf); //pid gain set
 		pid_velocity.PID_set_i(velocity_i_buf);
@@ -151,6 +160,28 @@ void STM_MotorSystem::STM_MotorSystem_start(){ //スタート毎にモードの�
 
 		this->velocity_tar = 0; //トルクコントロールモードでのフィードフォワード無効化
 		this->velocity_ref = 0;
+
+		this->use_adc.ADC_start();
+		HAL_TIM_Base_Start_IT(_control_timer);
+		break;
+
+	case ANGLE_CONTROL:
+		this->MotorSystem_mode = ANGLE_CONTROL;
+
+		before_vel = 0;
+		before_encoder_cnt = this->use_encoder.get_count(); //追加
+
+		pid_angle.PID_set_p(angle_p_buf); //pid gain set
+		pid_angle.PID_set_i(angle_i_buf);
+		pid_angle.PID_set_d(angle_d_buf);
+
+		pid_velocity.PID_set_p(velocity_p_buf); //pid gain set
+		pid_velocity.PID_set_i(0);
+		pid_velocity.PID_set_d(velocity_d_buf);
+
+		pid_torque.PID_set_p(torque_p_buf);
+		pid_torque.PID_set_i(torque_i_buf);
+		pid_torque.PID_set_d(torque_d_buf);
 
 		this->use_adc.ADC_start();
 		HAL_TIM_Base_Start_IT(_control_timer);

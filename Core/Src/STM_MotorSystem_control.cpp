@@ -7,6 +7,8 @@
 
 #include <STM_MotorSystem.hpp>
 
+#define PI 3.141592f
+
 void STM_MotorSystem::motor_control(){
 	/*
 	 * defaultには本来ありえないパターンの処理をおいている。すなはち、例外発生であるためモータシステムが停止する処理に入る。
@@ -57,6 +59,37 @@ void STM_MotorSystem::motor_control(){
 			break;
 
 		default:
+			this->MotorSystem_mode_buf = SYSTEM_STOP;
+			this->STM_MotorSystem_start();
+			break;
+
+		}}break;
+
+	case ANGLE_CONTROL:
+		{switch(control_switch){
+		case 1:
+			this->controller_angle();
+			this->controller_velocity();
+			this->controller_torque();
+			break;
+
+		case 2:
+		case 3:
+		case 4:
+		case 5:
+		case 6:
+		case 7:
+		case 8:
+		case 9:
+			this->controller_torque();
+			break;
+
+		case 10:
+			this->controller_torque();
+			control_switch = 0;
+			break;
+
+		default :
 			this->MotorSystem_mode_buf = SYSTEM_STOP;
 			this->STM_MotorSystem_start();
 			break;
@@ -134,6 +167,19 @@ void STM_MotorSystem::controller_torque(){
 }
 
 
+void STM_MotorSystem::controller_angle(){
+	this->angle_ref = this->get_angle();
+	float e_angle;
+	this->angle_tar = this->angle_buf;
+
+	e_angle = this->angle_tar - this->angle_ref;
+
+	velocity_buf = this->pid_angle.PID_controller(e_angle);
+
+	return;
+}
+
+
 
 float STM_MotorSystem::get_velocity(){
 	int64_t buf;
@@ -157,6 +203,17 @@ float STM_MotorSystem::get_current(){
 	return current_ref;
 }
 
+float STM_MotorSystem::get_angle(){
+	float angle = this->get_sum_angle();
+	angle = fmodf(angle,2*PI);
+	return angle;
+}
+
+float STM_MotorSystem::get_sum_angle(){
+	float angle;
+	angle = PI/(2*ppr)*(use_encoder.get_count()-use_encoder.get_ofset());
+	return angle;
+}
 
 void HAL_TIM_PeriodElapsedCallback (TIM_HandleTypeDef * htim){ //tim1割り込みコールバック
 

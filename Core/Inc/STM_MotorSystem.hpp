@@ -21,6 +21,7 @@
 typedef enum {
 	VELOCITY_CONTROL = 0xFFFF,
 	TORQUE_CONTROL = 0x0FFF,
+	ANGLE_CONTROL = 0xF0FF,
 	COAST_CONTROL = 0x00FF,
 	SYSTEM_STOP = 0x0000
 }mode;
@@ -41,6 +42,10 @@ private:
 	float current_buf; //外部MCUから入力される目標電流
 	float current_limit;
 
+	float angle_ref;
+	float angle_tar;
+	float angle_buf;
+
 	float volt; //電源電圧
 
 	float kt; //トルク係数 kv値[rpm/v]からだと 1/(rpm/v/60*2*3.141592)
@@ -54,6 +59,10 @@ private:
 	float torque_p_buf;
 	float torque_i_buf;
 	float torque_d_buf;
+
+	float angle_p_buf;
+	float angle_i_buf;
+	float angle_d_buf;
 
 	float before_vel;
 
@@ -74,6 +83,8 @@ private:
 	TIM_HandleTypeDef *_control_timer;
 
 	GPIO_PinState dir_f;
+
+	uint8_t init_f; //二重初期化防止フラグ
 
 public:
 	STM_MotorSystem(ADC_HandleTypeDef *_hadc,
@@ -101,6 +112,11 @@ public:
 		this->MotorSystem_mode_buf = TORQUE_CONTROL;
 	}
 
+	void set_angle(float angle_tar){
+		this->angle_buf = angle_tar;
+		this->MotorSystem_mode_buf = ANGLE_CONTROL;
+	}
+
 	float com_get_velocity(){//通信系に現在の速度を返す
 		return this->velocity_ref;
 	}
@@ -114,6 +130,15 @@ public:
 	}
 	float get_current(); //電流センサ出力から現在の電流を返す
 
+
+
+	float get_angle(); //エンコダから-2π~0~2πの角度を返す
+
+	float get_sum_angle(); //エンコダから総角度変化を返す
+
+	float com_get_sum_angle(){ //現在の角度
+		return get_angle();
+	}
 
 
 	/*motor_control()でタイマー割りこみによるシステムを構成する上で、下記のようにコントローラ関数を命名すると分かりやい
@@ -137,6 +162,8 @@ public:
 	 （PIDコントローラを用いたフィードバックシステムであるためロバストが存在するため書いたようにはならない）
 
 	 */
+
+	void controller_angle();
 
 	void motor_control();
 
@@ -179,6 +206,8 @@ public:
 		this->velocity_d_buf = velocity_d_buf;
 	}
 
+
+
 	void set_torque_p(float torque_p_buf){
 		this->torque_p_buf = torque_p_buf;
 	}
@@ -190,6 +219,21 @@ public:
 	void set_torque_d(float torque_d_buf){
 		this->torque_d_buf = torque_d_buf;
 	}
+
+
+
+	void set_angle_p(float angle_p_buf){
+		this->angle_p_buf = angle_p_buf;
+	}
+
+	void set_angle_i(float angle_i_buf){
+		this->angle_i_buf = angle_i_buf;
+	}
+
+	void set_angle_d(float angle_d_buf){
+		this->angle_d_buf = angle_d_buf;
+	}
+
 
 
 	void debug_func(){ //動作テスト用関数
@@ -220,6 +264,8 @@ public:
 	PID pid_velocity;
 
 	PID pid_torque;
+
+	PID pid_angle;
 
 	USER_CAN use_can;
 

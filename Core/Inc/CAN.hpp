@@ -25,6 +25,11 @@ typedef enum{
 	SET_TORQUE_I = 0x770,
 	SET_TORQUE_D = 0x780,
 
+	SET_ANGLE = 0x790,
+	SET_ANGLE_P = 0x7A0,
+	SET_ANGLE_I = 0x7B0,
+	SET_ANGLE_D = 0x7C0,
+
 	SET_VOLTAGE =0x610, //電源電圧
 	SET_PPR = 0x620, //エンコダ分解能
 	SET_KT = 0x630, //モタトルク係数
@@ -44,6 +49,12 @@ typedef enum{
 	GET_TORQUE_D = 0x470, //追加予定
 
 	GET_CURRENT = 0x480,
+
+	GET_SUM_ANGLE = 0x490,
+
+	GET_ANGLE_P = 0x4A0, //追加予定
+	GET_ANGLE_I = 0x4B0, //追加予定
+	GET_ANGLE_D = 0x4C0, //追加予定
 
 	GET_FF1_STATE = 0x310, //追加予定
 	GET_FF2_STATE = 0x320, //追加予定
