@@ -23,6 +23,7 @@ void STM_MotorSystem::motor_control(){
 	case VELOCITY_CONTROL:
 		{switch(control_switch){
 		case 1:
+			this->velocity_tar = this->velocity_buf;
 			this->controller_velocity();
 			this->controller_torque();
 			break;
@@ -68,6 +69,7 @@ void STM_MotorSystem::motor_control(){
 	case ANGLE_CONTROL:
 		{switch(control_switch){
 		case 1:
+			this->angle_tar = this->angle_buf;
 			this->controller_angle();
 			this->controller_velocity();
 			this->controller_torque();
@@ -118,7 +120,6 @@ void STM_MotorSystem::motor_control(){
 void STM_MotorSystem::controller_velocity(){
 	this->velocity_ref = this->get_velocity();
 	float e_velocity;
-	this->velocity_tar = this->velocity_buf;
 
 
 	if(fabsf(velocity_tar) > velocity_limit){
@@ -143,7 +144,6 @@ void STM_MotorSystem::controller_torque(){
 	float e_current;
 	float volt_tar;
 
-	/*
 	if(fabsf(current_tar) > current_limit){
 				if(current_tar > 0){
 					current_tar = current_limit;
@@ -151,8 +151,6 @@ void STM_MotorSystem::controller_torque(){
 					current_tar = -1*current_limit;
 				}
 			}
-	*/
-
 
 	e_current = current_tar - this->get_current();
 
@@ -178,8 +176,6 @@ void STM_MotorSystem::controller_angle(){
 
 	float e_angle;
 
-	this->angle_tar = this->angle_buf;
-
 	e_angle = angle_tar - angle_ref;
 
 	//if(fabsf(e_angle) < (PI/360)) e_angle=0 ;
@@ -199,7 +195,7 @@ void STM_MotorSystem::controller_angle(){
 
 
 
-	velocity_buf = this->pid_angle.PID_controller(e_angle);
+	velocity_tar = this->pid_angle.PID_controller(e_angle);
 
 	return;
 }
