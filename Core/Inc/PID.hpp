@@ -9,6 +9,8 @@
 #define INC_PID_HPP_
 #include "main.h"
 
+#include <math.h>
+
 class PID
 {
 private:
@@ -23,21 +25,41 @@ private:
 	float i_mv;
 	float d_mv;
 
+	float i_lim; //積分リミッタ
+	float mv_lim; //制御量リミッタ
+
 public:
-	PID(float p,float i,float d,float dt);
+	PID(float p,float i,float d,float dt,float i_lim,float mv_lim);
 	void PID_set_p(float p);
 	void PID_set_i(float i);
 	void PID_set_d(float d);
 	void PID_set_dt(float dt);
+
+	void PID_set_i_lim(float lim);
+	void PID_set_mv_lim(float lim);
+
 	float PID_get_p();
 	float PID_get_i();
 	float PID_get_d();
+
 	float PID_controller(float error);
+
 	void PID_reset();
 };
 
-inline PID::PID(float p,float i,float d,float dt):
-		p(p),i(i),d(d),dt(dt),error(0),i_sum(0),error_before(0),p_mv(0),i_mv(0),d_mv(0)
+inline PID::PID(float p,float i,float d,float dt,float i_lim,float mv_lim):
+		p(p),
+		i(i),
+		d(d),
+		dt(dt),
+		error(0),
+		i_sum(0),
+		error_before(0),
+		p_mv(0),
+		i_mv(0),
+		d_mv(0),
+		i_lim(i_lim),
+		mv_lim(mv_lim)
 {
 	return;
 }
@@ -56,6 +78,14 @@ inline void PID::PID_set_d(float d){
 
 inline void PID::PID_set_dt(float dt){
 	this->dt = dt;
+}
+
+inline void PID::PID_set_i_lim(float lim){
+	this->i_lim = lim;
+}
+
+inline void PID::PID_set_mv_lim(float lim){
+	this->mv_lim = lim;
 }
 
 inline float PID::PID_get_p(){
@@ -81,11 +111,28 @@ inline float PID::PID_controller(float error){
 
 	i_sum = i_sum + dt*(error+error_before)/2; //微小時間の間線形に動いていたとして
 
+	if(fabsf(i_sum) > this->i_lim){
+		if(i_sum > 0){
+			i_sum = i_lim;
+		}else{
+			i_sum = -1*i_lim;
+		}
+	}
+
 	p_mv = this->p*error;
 	i_mv = this->i*i_sum;
 	d_mv = this->d*(error-error_before)/dt;
 
 	MV = p_mv+i_mv+d_mv;
+
+	if(fabsf(MV) > this->mv_lim){
+		if(MV > 0){
+			MV = mv_lim;
+		}else{
+			MV = -1*mv_lim;
+		}
+	}
+
 	error_before = error;
 
 	return MV;

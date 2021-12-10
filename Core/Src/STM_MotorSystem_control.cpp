@@ -120,6 +120,7 @@ void STM_MotorSystem::controller_velocity(){
 	float e_velocity;
 	this->velocity_tar = this->velocity_buf;
 
+
 	if(fabsf(velocity_tar) > velocity_limit){
 			if(velocity_tar > 0){
 				velocity_tar = velocity_limit;
@@ -127,6 +128,7 @@ void STM_MotorSystem::controller_velocity(){
 				velocity_tar = -1*velocity_limit;
 			}
 		}
+
 
 	e_velocity = this->velocity_tar - this->velocity_ref;
 
@@ -141,6 +143,7 @@ void STM_MotorSystem::controller_torque(){
 	float e_current;
 	float volt_tar;
 
+	/*
 	if(fabsf(current_tar) > current_limit){
 				if(current_tar > 0){
 					current_tar = current_limit;
@@ -148,6 +151,8 @@ void STM_MotorSystem::controller_torque(){
 					current_tar = -1*current_limit;
 				}
 			}
+	*/
+
 
 	e_current = current_tar - this->get_current();
 
@@ -168,11 +173,31 @@ void STM_MotorSystem::controller_torque(){
 
 
 void STM_MotorSystem::controller_angle(){
+
 	this->angle_ref = this->get_angle();
+
 	float e_angle;
+
 	this->angle_tar = this->angle_buf;
 
-	e_angle = this->angle_tar - this->angle_ref;
+	e_angle = angle_tar - angle_ref;
+
+	//if(fabsf(e_angle) < (PI/360)) e_angle=0 ;
+
+	/*
+	if(fabsf(e_angle) > PI){
+				if(e_angle > 0){
+					e_angle = PI;
+				}else{
+					e_angle = -1*PI;
+				}
+			}
+	*/
+
+	//if(fabsf(e_angle) < (PI/18))pid_angle.PID_set_i(this->angle_i_buf);
+	//if(fabsf(e_angle) > (PI/18))pid_angle.PID_set_i(0);
+
+
 
 	velocity_buf = this->pid_angle.PID_controller(e_angle);
 
@@ -203,9 +228,16 @@ float STM_MotorSystem::get_current(){
 	return current_ref;
 }
 
+int32_t STM_MotorSystem::get_angle_cnt(){
+	int32_t angle;
+	angle = use_encoder.get_count()- ofset_angle;
+	return angle;
+}
+
 float STM_MotorSystem::get_angle(){
-	float angle = this->get_sum_angle();
-	angle = fmodf(angle,2*PI);
+	float angle;
+	angle = PI/(2*ppr)*(use_encoder.get_count() - ofset_angle);
+
 	return angle;
 }
 

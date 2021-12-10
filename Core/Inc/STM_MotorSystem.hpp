@@ -66,6 +66,9 @@ private:
 
 	float before_vel;
 
+	float ofset_angle;
+	float before_angle;
+
 	GPIO_TypeDef *GPIO_dir;
 	uint16_t GPIO_PIN_dir;
 
@@ -131,8 +134,9 @@ public:
 	float get_current(); //電流センサ出力から現在の電流を返す
 
 
+	int32_t get_angle_cnt();
 
-	float get_angle(); //エンコダから-2π~0~2πの角度を返す
+	float get_angle(); //現在の角度を返す
 
 	float get_sum_angle(); //エンコダから総角度変化を返す
 

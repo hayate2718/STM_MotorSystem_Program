@@ -1,4 +1,4 @@
-main.cpp:79:5:int main()	648	static
+main.cpp:79:5:int main()	680	static
 main.cpp:128:6:void SystemClock_Config()	96	static
 main.cpp:177:13:void MX_ADC2_Init()	32	static
 main.cpp:232:13:void MX_CAN_Init()	8	static

@@ -17,6 +17,7 @@ STM_MotorSystem::STM_MotorSystem(
 		):
 velocity_ref(0),
 velocity_tar(0),
+velocity_limit(1000),
 
 current_ref(0),
 current_tar(0),
@@ -32,13 +33,15 @@ ppr(0),
 
 before_vel(0),
 
+ofset_angle(0),
+
 control_switch(0),
 
 init_f(0),
 
-pid_velocity(0,0,0,0.0001),
-pid_torque(0,0,0,0.0001),
-pid_angle(0,0,0,0.001),
+pid_velocity(0,0,0,0.0001,10000,10000),
+pid_torque(0,0,0,0.0001,10000,10000),
+pid_angle(0,0,0,0.0001,10000,10000),
 use_can(_hcan),
 use_pwm(_pwm_timer,TIM_CHANNEL_n),
 use_encoder(_encoder_timer),
@@ -71,6 +74,11 @@ use_adc(_hadc,3.3)
 	//pid init
 	pid_velocity.PID_set_dt(0.001);
 	pid_torque.PID_set_dt(0.0001);
+	pid_angle.PID_set_dt(0.001);
+
+	pid_velocity.PID_set_i_lim(10000);
+	pid_torque.PID_set_i_lim(10000);
+	pid_angle.PID_set_i_lim(10000);
 
 	this->velocity_p_buf = 0;
 	this->velocity_i_buf = 0;
@@ -84,7 +92,7 @@ use_adc(_hadc,3.3)
 	before_encoder_cnt = use_encoder.get_ofset();
 
 	//速度、電流制限
-	velocity_limit = 100; //ここはそこまで問題じゃない
+	//velocity_limit = 10000;
 	current_limit = 10; //こっちはちゃんと設定しないと積分がバグる。とくにストールとかさせたとき
 
 	//a3921のdirピンの操作ピン設定
@@ -130,6 +138,7 @@ void STM_MotorSystem::STM_MotorSystem_start(){ //スタート毎にモードの�
 
 	pid_velocity.PID_reset();
 	pid_torque.PID_reset();
+	pid_angle.PID_reset();
 
 	switch(MotorSystem_mode_buf){
 	case VELOCITY_CONTROL:
@@ -139,13 +148,19 @@ void STM_MotorSystem::STM_MotorSystem_start(){ //スタート毎にモードの�
 
 		before_encoder_cnt = this->use_encoder.get_count();
 
+		velocity_limit = this->volt/this->kt*0.7;
+
 		pid_velocity.PID_set_p(velocity_p_buf); //pid gain set
 		pid_velocity.PID_set_i(velocity_i_buf);
 		pid_velocity.PID_set_d(velocity_d_buf);
+		pid_velocity.PID_set_mv_lim(this->current_limit);
+		pid_velocity.PID_set_i_lim(this->current_limit*0.7);
 
 		pid_torque.PID_set_p(torque_p_buf);
 		pid_torque.PID_set_i(torque_i_buf);
 		pid_torque.PID_set_d(torque_d_buf);
+		pid_torque.PID_set_mv_lim(this->volt);
+		pid_torque.PID_set_i_lim(this->volt*0.7);
 
 		this->use_adc.ADC_start();
 		HAL_TIM_Base_Start_IT(_control_timer);
@@ -157,6 +172,8 @@ void STM_MotorSystem::STM_MotorSystem_start(){ //スタート毎にモードの�
 		pid_torque.PID_set_p(torque_p_buf);
 		pid_torque.PID_set_i(torque_i_buf);
 		pid_torque.PID_set_d(torque_d_buf);
+		pid_torque.PID_set_mv_lim(this->volt);
+		pid_torque.PID_set_i_lim(this->volt*0.7);
 
 		this->velocity_tar = 0; //トルクコントロールモードでのフィードフォワード無効化
 		this->velocity_ref = 0;
@@ -171,17 +188,26 @@ void STM_MotorSystem::STM_MotorSystem_start(){ //スタート毎にモードの�
 		before_vel = 0;
 		before_encoder_cnt = this->use_encoder.get_count(); //追加
 
+		ofset_angle = this->use_encoder.get_count();
+		//before_angle = 0;
+
 		pid_angle.PID_set_p(angle_p_buf); //pid gain set
-		pid_angle.PID_set_i(angle_i_buf);
+		pid_angle.PID_set_i(0);
 		pid_angle.PID_set_d(angle_d_buf);
+		pid_angle.PID_set_mv_lim(this->volt/this->kt*0.7);
+		pid_angle.PID_set_i_lim(this->volt/this->kt*0.5);
 
 		pid_velocity.PID_set_p(velocity_p_buf); //pid gain set
 		pid_velocity.PID_set_i(0);
 		pid_velocity.PID_set_d(velocity_d_buf);
+		pid_velocity.PID_set_mv_lim(this->current_limit);
+		pid_velocity.PID_set_i_lim(this->current_limit*0.7);
 
 		pid_torque.PID_set_p(torque_p_buf);
 		pid_torque.PID_set_i(torque_i_buf);
 		pid_torque.PID_set_d(torque_d_buf);
+		pid_torque.PID_set_mv_lim(this->volt);
+		pid_torque.PID_set_i_lim(this->volt*0.7);
 
 		this->use_adc.ADC_start();
 		HAL_TIM_Base_Start_IT(_control_timer);
