@@ -66,7 +66,7 @@ private:
 
 	float before_vel;
 
-	float ofset_angle;
+	uint32_t ofset_angle;
 	float before_angle;
 
 	GPIO_TypeDef *GPIO_dir;

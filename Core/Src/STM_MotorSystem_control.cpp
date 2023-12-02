@@ -225,7 +225,7 @@ float STM_MotorSystem::get_current(){
 }
 
 int32_t STM_MotorSystem::get_angle_cnt(){
-	int32_t angle;
+	uint32_t angle;
 	angle = use_encoder.get_count()- ofset_angle;
 	return angle;
 }
