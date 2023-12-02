@@ -85,7 +85,8 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+
+	HAL_Init();
 
   /* USER CODE BEGIN Init */
 
@@ -108,6 +109,10 @@ int main(void)
   MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
   STM_MotorSystem use_ms(&hadc2,&hcan,&htim2,&htim3,TIM_CHANNEL_3,&htim1);
+
+  //use_ms.debug_func();
+  //use_ms.debug_func2();
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -115,6 +120,8 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
+
+
 
     /* USER CODE BEGIN 3 */
   }

@@ -204,10 +204,13 @@ void STM_MotorSystem::controller_angle(){
 
 float STM_MotorSystem::get_velocity(){
 	int64_t buf;
+	int64_t buf2;
 	float velocity;
 
 	buf = this->use_encoder.get_count();
-	buf -= before_encoder_cnt;
+	buf2 = before_encoder_cnt;
+
+	buf -= buf2;
 	before_encoder_cnt += buf;
 	velocity = buf;
 	velocity *=1570.796/ppr;
@@ -224,15 +227,22 @@ float STM_MotorSystem::get_current(){
 	return current_ref;
 }
 
+/* 使う意味なし　バグ
 int32_t STM_MotorSystem::get_angle_cnt(){
 	uint32_t angle;
 	angle = use_encoder.get_count()- ofset_angle;
 	return angle;
 }
+*/
 
 float STM_MotorSystem::get_angle(){
 	float angle;
-	angle = PI/(2*ppr)*(use_encoder.get_count() - ofset_angle);
+	int64_t buf;
+	int64_t buf2;
+
+	buf = use_encoder.get_count();
+	buf2 = this->ofset_angle;
+	angle = PI/(2*ppr)*(buf - buf2);
 
 	return angle;
 }

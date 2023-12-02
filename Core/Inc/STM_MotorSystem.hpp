@@ -134,7 +134,7 @@ public:
 	float get_current(); //電流センサ出力から現在の電流を返す
 
 
-	int32_t get_angle_cnt();
+	// int32_t get_angle_cnt();　ゴミ
 
 	float get_angle(); //現在の角度を返す
 
@@ -248,15 +248,15 @@ public:
 
 	void debug_func2(){
 		  STM_MotorSystem_init();
-		  set_torque_p(0.3);
-		  set_torque_i(100);
-		  set_torque_d(0);
+		  set_torque_p(1);
+		  set_torque_i(0);
+		  set_torque_d(0.25);
 		  set_kt(7.2*60/221/2/3.141592);
 		  set_ppr(2048);
-		  set_velocity_p(3.3);
-		  set_velocity_i(100);
-		  set_velocity_d(0.00003);
-		  //set_velocity(0.2*3.14);
+		  set_velocity_p(5.25);
+		  set_velocity_i(0.0003);
+		  set_velocity_d(0.33);
+		  set_velocity(0.2*3.14);
 		  //set_torque(-0.1);
 		  STM_MotorSystem_start();
 	}

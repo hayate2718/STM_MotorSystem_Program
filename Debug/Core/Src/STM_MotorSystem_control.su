@@ -6,9 +6,8 @@ STM_MotorSystem_control.cpp:12:6:void STM_MotorSystem::motor_control()	16	static
 STM_MotorSystem_control.cpp:120:6:void STM_MotorSystem::controller_velocity()	24	static
 STM_MotorSystem_control.cpp:143:6:void STM_MotorSystem::controller_torque()	32	static
 STM_MotorSystem_control.cpp:173:6:void STM_MotorSystem::controller_angle()	24	static
-STM_MotorSystem_control.cpp:205:7:float STM_MotorSystem::get_velocity()	40	static
-STM_MotorSystem_control.cpp:222:7:float STM_MotorSystem::get_current()	16	static
-STM_MotorSystem_control.cpp:227:9:int32_t STM_MotorSystem::get_angle_cnt()	24	static
-STM_MotorSystem_control.cpp:233:7:float STM_MotorSystem::get_angle()	32	static
-STM_MotorSystem_control.cpp:240:7:float STM_MotorSystem::get_sum_angle()	40	static
-STM_MotorSystem_control.cpp:246:6:void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef*)	24	static
+STM_MotorSystem_control.cpp:205:7:float STM_MotorSystem::get_velocity()	48	static
+STM_MotorSystem_control.cpp:225:7:float STM_MotorSystem::get_current()	16	static
+STM_MotorSystem_control.cpp:238:7:float STM_MotorSystem::get_angle()	56	static
+STM_MotorSystem_control.cpp:250:7:float STM_MotorSystem::get_sum_angle()	40	static
+STM_MotorSystem_control.cpp:256:6:void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef*)	24	static
